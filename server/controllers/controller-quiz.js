@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const findByIdAndMore = require('./_includes/find_by_id_and_more');
+
 const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
@@ -15,6 +17,21 @@ exports.restart = function restart(req, res) {
   req.session.quiz = null;
   res.redirect('/');
 };
+
+// helper function which extracts user, quiz from session variables and
+//   calls an inner function with signature:
+//     inner(req, res, user, quiz, errArr)
+// errArr defaults to an empty array
+function findQuizUserAndCallInner(req, res, inner) {
+  if (!errArr) {
+    errArr = [];
+  }
+  findByIdAndMore(userModel, req.session.userId, 'user', errArr, (user) => {
+    findByIdAndMore(quizModel, req.session.quizId, 'quiz', errArr, (quiz) => {
+      inner(req, res, user, quiz, errArr);
+    });
+  });
+}
 
 //  find user from userId, quiz from quizId and then call inner.
 //
