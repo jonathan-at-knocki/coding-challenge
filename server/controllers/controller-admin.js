@@ -61,7 +61,7 @@ exports.logout = function logout(req, res, next) {
 //   THE ADMIN PAGES
 */
 
-// equivalent to findQuizUserAndCallInner but for array of quizzes
+// equivalent to findQuizUserAndCallInner but for the array of all quizzes
 // thus, inner has signature:
 //   inner(req, res, user, quizzes, errArr),
 // where quizzes is an array of all quizzes
@@ -70,16 +70,13 @@ function findQuizzesUserAndCallInner(inner) {
     var errArr = [];
     common.findByIdAndMore(
       userModel, req.session.userId, 'user', errArr, (user) => {
-        quizModel.find()
-        findByIdAndMore(
-          quizModel, req.session.quizId, 'quiz', errArr, (quiz) => {
-            inner(req, res, user, quiz, errArr);
-          });
+        quizModel.find().exec((err, quizzes) => {
+          common.addToErrArr(err, 'all quizzes', errArr);
+          inner(req, res, user, quizzes, errArr);
+        });
       });
   };
-};
-
-
+}
 
 //  the main admin screen
 exports.main = function admin(req, res, next) {

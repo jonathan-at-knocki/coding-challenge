@@ -7,8 +7,9 @@ const quizModel = mongoose.model('Quiz');
 //  add error string errArr as appropriate, with error prefixed by
 //  appropriate string using itemName
 exports.addToErrArr = function addToErrArr(err, itemName, errArr) {
-  
-}
+  if (err) errArr.push('Error finding ' + itemName + ': ' + err.toString);
+};
+const addToErrArr = exports.addToErrArr;
 
 //  findById on model and then append to errArr as necessary.
 //  errArr is the current errArr, which might be altered (as well as being
@@ -27,7 +28,7 @@ exports.findByIdAndMore = function findByIdAndMore(
     callback(errArr, null);
   } else {
     itemModel.findById(itemId).exec((err, item) => {
-      if (err) errArr.push('Error finding ' + itemName + ': ' + err.toString);
+      addToErrArr(err, itemName, errArr);
       callback(errArr, item);
     });
   }
