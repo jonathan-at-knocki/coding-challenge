@@ -33,7 +33,8 @@ exports.show = function show(req, res) {
 //  process an answer
 exports.answer = function answer(req, res) {
   const quiz = req.session.quiz;
-  const answer = parseInt(req.params.answer, 10);
+  var answer = req.body.answer;
+
   const render = errMsg =>
         res.render('view-quiz', {
           quiz,
@@ -41,16 +42,21 @@ exports.answer = function answer(req, res) {
           errMsg
         });
   // get quiz for session
-  if (!req.session.quiz) {
+  if (!quiz) {
     render('Answer given with no quiz started');
-  } else if (isNaN(req.params.answer)) {
-    render('Bad answer given: ' + req.params.answer);
+  } else if (!answer) {
+    render('No answer given');
   } else {
-    quiz.answerQuestion(
-      answer,
-      req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-      err => render(err ? err.toString() : '')
-    );
+    answer = parseInt(answer, 10);
+    if (isNaN(answer)) {
+      render('Bad answer given: ' + answer);
+    } else {
+      quiz.answerQuestion(
+        answer,
+        req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        err => render(err ? err.toString() : '')
+      );
+    }
   }
 };
 

@@ -6,7 +6,7 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', quiz.show);
-router.get('/', quiz.answer);
+router.post('/', quiz.answer);
 router.get('/restart', quiz.restart);
 
 /* admin login */

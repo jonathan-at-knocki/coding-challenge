@@ -32,17 +32,14 @@ process.once('SIGUSR2', () => {
 });
 
 // app terminates
-process.once('SIGINT', () => {
+process.on('SIGINT', () => {
   disconnectWiMsg('apt termination', () => process.exit(0));
 });
 
 // for Heroku app terminates
-process.once('SIGTERM', () => {
+process.on('SIGTERM', () => {
   disconnectWiMsg('Heroku apt termination', () => process.exit(0));
 });
-
-process.on('SIGINT', disconnectWiMsg(
-  'nodemon restart', () => process.kill(process.pid, 'SIGUSR2')));
 
 // add schema, model
 require('./model-quiz');

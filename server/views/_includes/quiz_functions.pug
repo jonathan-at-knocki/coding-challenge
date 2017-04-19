@@ -41,7 +41,7 @@ mixin showQuiz
         = gradePercentStr(quiz.questionsCorrect, quiz.questionsAnswered);
     span.gradePercent= theGradePercentStr
   - var questions = quiz.questions
-  for (var i = 0; i <= questions.length - 2; i++)
+  - for (var i = 0; i <= questions.length - 2; i++)
     - var question = questions[i]
     - 
       var isCorrectClass = question.answerCorrect == question.answerGiven 
