@@ -19,7 +19,7 @@ const common = require('./_includes/controller-common');
 //
 // if no user, redirects to "/admin/login"
 // (thus, this cannot be used for /admin/login)
-function findUserAndCall(callback) {
+function validateAndCall(callback) {
   return (req, res, next) => {
     const errArr = [];
     const redirect = () => {
@@ -49,9 +49,22 @@ function findUserAndCall(callback) {
 //   LOGIN / LOGOUT
 */
 
-//  helper for login functions. redirect if user is logged in
-function redirectIfLoggedIn(req) {
-  
+//  helper for login functions.
+//  redirect if user is logged in, otherwise call callback
+function redirectIfLoggedIn(req, res, callback) {
+  if (req.session.userId) {
+    userModel.findById(req.session.userId).exec((err, user) => {
+      if (err) {
+        req.session.userId = null;
+        callback();
+        return;
+      }
+      res.redirect(req.query.redirect
+                   ? decodeURI(req.query.redirect) : '/admin');
+    });
+  } else {
+    callback();
+  }
 }
 
 //  login screen
@@ -65,59 +78,52 @@ exports.loginShow = function loginShow(req, res, next, email, errArr) {
     res.render('view-admin-login', {
       title: 'Login user',
       email,
-      errArr
+      errArr,
+      redirect: req.query.redirect
     });
   }
 
-  if (req.session.userId) {
-    userModel.findById(req.session.userId).exec((err, user) => {
-      if (err) {
-        req.session.userId = null;
-        render();
-        return;
-      }
-      res.redirect('/admin');
-    });
-  }
-
-  render();
+  redirectIfLoggedIn(req, res, render);
 };
 
 
 // act on a login request
 exports.loginDo = function login(req, res) {
-  const email = req.body.email;
-  const password = req.body.password;
-  const reshow = msg => exports.loginShow(req, res, null, email, msg);
+  redirectIfLoggedIn(req, res, () => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const reshow = msg => exports.loginShow(req, res, null, email, [msg]);
 
-  if (!(email && password)) {
-    reshow('Both email and password must be nonblank');
-    return;
-  }
-
-  userModel.findOne({ email }, (err, user) => {
-    if (err) {
-      reshow('Problem with database: ' + err);
-    } else if (!user) {
-      reshow('Could not find user');
-    } else {
-      // found user
-
-      // eslint-disable-next-line no-lonely-if
-      if (user.validatePassword(password)) {
-        req.session.user = user;
-        res.redirect('/admin');
-      } else {
-        reshow('Incorrect password');
-      }
+    if (!(email && password)) {
+      reshow('Both email and password must be nonblank');
+      return;
     }
+
+    userModel.findOne({ email }, (err, user) => {
+      if (err) {
+        reshow('Problem with database: ' + err);
+      } else if (!user) {
+        reshow('Could not find user');
+      } else {
+        // found user
+
+        // eslint-disable-next-line no-lonely-if
+        if (user.validatePassword(password)) {
+          req.session.user = user;
+          res.redirect('/admin');
+        } else {
+          reshow('Incorrect password');
+        }
+      }
+    });
   });
 };
 
 //  logout the admin user
 exports.logout = function logout(req, res, next) {
   req.session.userId = null;
-  res.redirect(req.query.redirect ? req.query.redirect : '/admin/login');
+  res.redirect(req.query.redirect
+               ? decodeURI(req.query.redirect) : '/admin/login');
 };
 
 /*
@@ -125,11 +131,14 @@ exports.logout = function logout(req, res, next) {
 //   THE ADMIN PAGES
 */
 
-// equivalent to findQuizUserAndCallInner but for the array of all quizzes
-// thus, inner has signature:
-//   inner(req, res, user, quizzes, errArr),
+// helper function which returns a function that can be passed to an
+//  express app callback and which checks credentials and then extracts
+//  quizzes, user from session variables before calling inner with
+//  signature:
+//     inner(req, res, user, quizzes, errArr)
 // where quizzes is an array of all quizzes
-function findQuizzesUserAndCallInner(inner) {
+
+function validateAndFindQuizzesAndCallInner(inner) {
   return (req, res, next) => {
     var errArr = [];
     common.findByIdAndMore(
@@ -141,6 +150,22 @@ function findQuizzesUserAndCallInner(inner) {
       });
   };
 }
+
+// like validateAndFindQuizzesAndCallInner but uses req.params.quizId to
+// find a single quiz instead of all quizzes
+function validateAndFindOneQuizAndCallInner(inner) {
+  return (req, res, next) => {
+    var errArr = [];
+    common.findByIdAndMore(
+      userModel, req.session.userId, 'user', errArr, (user) => {
+        quizModel.find().exec((err, quizzes) => {
+          common.addToErrArr(err, 'all quizzes', errArr);
+          inner(req, res, user, quizzes, errArr);
+        });
+      });
+  };
+}
+
 
 //  the main admin screen
 exports.main = function admin(req, res, next) {
