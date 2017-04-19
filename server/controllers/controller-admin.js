@@ -9,13 +9,13 @@ const quizModel = mongoose.model('Quiz');
 */
 
 //  login screen
-//  email, errMsg are for showing an error message and prepopulating the
+//  email, errArr are for showing an error message and prepopulating the
 //  email box
-exports.loginShow = function loginShow(req, res, next, email, errMsg) {
+exports.loginShow = function loginShow(req, res, next, email, errArr) {
   res.render('view-admin-login', {
     title: 'Login user',
     email,
-    errMsg
+    errArr
   });
 };
 
@@ -70,7 +70,7 @@ exports.main = function admin(req, res, next) {
   quizModel.find().exec((err, quizzes) => {
     res.render('view-quiz', {
       quizzes,
-      errMsg: err ? 'Could not find quiz: ' + err.toString() : ''
+      errArr: err ? 'Could not find quiz: ' + err.toString() : ''
     });
   });
   res.render('view-admin-main', { user: req.session.user });
@@ -86,7 +86,7 @@ exports.quiz = function quiz(req, res, next) {
   quizModel.findById(req.session.quizId).exec((err, quiz) => {
     res.render('view-quiz', {
       quiz,
-      errMsg: err ? 'Could not find quiz: ' + err.toString() : ''
+      errArr: err ? 'Could not find quiz: ' + err.toString() : ''
     });
   });
 };
@@ -98,9 +98,9 @@ exports.quiz = function quiz(req, res, next) {
 */
 
 //  registration screen
-//  email, errMsg are for showing an error message and prepopulating the
+//  email, errArr are for showing an error message and prepopulating the
 //  email box
-const registerShow = function registerShow(req, res, next, email, errMsg) {
+const registerShow = function registerShow(req, res, next, email, errArr) {
   if (!req.session.user) {
     res.redirect('/admin/login');
     return;
@@ -110,7 +110,7 @@ const registerShow = function registerShow(req, res, next, email, errMsg) {
     res.render('view-admin-register', {
       title: 'Register new admin user',
       email,
-      errMsg
+      errArr
     });
   } else {
     res.redirect('/admin/login');

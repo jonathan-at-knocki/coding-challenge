@@ -5,84 +5,71 @@ const quizModel = mongoose.model('Quiz');
 
 //  find user from userId, quiz from quizId and then call inner.
 //
-//  form of inner: inner(req, res, errMsg, user, quiz),
-//  where errMsg is any appropriate error message (or null if none).
+//  form of inner: inner(req, res, errArr, user, quiz),
+//  where errArr is an array of appropriate error messages (or [] if none).
 //
 //  if userId not given, simply call inner with user as null
 function findUserQuizThenCall(req, res, userId, quizId, inner) {
-  // called after finding user
-  function findQuizThenCall(errMsg, user) {
+  // findQuizThenCall called after finding user
+  function findQuizThenCall(errArr, user) {
     if (!quizId) {
-      inner(req, res, errMsg, user, null);
+      inner(req, res, errArr, user, null);
     } else {
       quizModel.findById(quizId).exec((err, quiz) => {
-        findQuizThenCall(errMsg.concat(
-          ['Error finding user: ' + err.toString()]),
-          user);
+        inner(req, res,
+              err
+              ? errArr.concat(
+                ['Error finding user: ' + err.toString()])
+              : errArr,
+              user, quiz);
       });
     }
   }
-  
+
   if (!userId) {
-    findQuizThenCall(null, null);
+    findQuizThenCall([], null);
   } else {
     userModel.findById(userId).exec((err, user) => {
       findQuizThenCall(
-        err ? 'Error finding user: ' + err.toString : null, user);
+        err ? 'Error finding user: ' + err.toString : [], user);
     });
   }
 }
 
 exports.show = (req, res) => findUserQuizThenCall(showInner);
 
-
-//  function to show the quiz page after searching for user
-function showInner(req, res, errMsg, user, quiz) {
-  // check for user first
-  userModel.findById
-  
-  // get quiz for session
-  if (!req.session.quizId) {
-    // not quiz started. start a new one
+//  function to show the quiz page
+function showInner(req, res, errArr, user, quiz) {
+  if (!quiz) {
+    // no quiz started. start a new one
 
     // we use nginx, so we need x-forwarded-for
     quizModel.startNew(
       req.headers['x-forwarded-for'] || req.connection.remoteAddress,
       (err, quiz) => {
         if (err) {
-          res.render('view-error', {
-            message: 'Failure making quiz',
-            error: err
-          });
+          quiz = null;
+          errArr.push('Error startig new quiz: ' + err.toString());
         } else {
-          // set session quiz variable, then render view
           req.session.quizId = quiz._id;
-          res.render('view-quiz',
-                     { quiz, user: req.session.user });
         }
+        res.render('view-quiz', { user, quiz, errArr });
       });
   } else {
-    //  find existing quiz
-    quizModel.findById(req.session.quizId).exec((err, quiz) => {
-      res.render('view-quiz', {
-        quiz: req.session.quiz,
-        user: req.session.user,
-        
-      });
-    })
+    res.render('view-quiz', { user, quiz, errArr });
   }
-};
+}
 
 //  process an answer
 exports.answer = function answer(req, res) {
   const quiz = req.session.quiz;
   var answer = req.body.answer;
 
-  const render = errMsg =>
+  const render = errArr =>
         res.render('view-quiz', {
           quiz,
           user: req.session.user,
-          errMsg
+          errArr
         });
   // get quiz for session
   if (!quiz) {
