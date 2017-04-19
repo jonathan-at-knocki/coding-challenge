@@ -3,25 +3,44 @@ const mongoose = require('mongoose');
 const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
-//  find user from userId and call inner, which should be of the form
-//  inner(req, res, errMsg, user), where errMsg is any appropriate
-//  error message (or nil if none)
+//  find user from userId, quiz from quizId and then call inner.
+//
+//  form of inner: inner(req, res, errMsg, user, quiz),
+//  where errMsg is any appropriate error message (or null if none).
+//
 //  if userId not given, simply call inner with user as null
-function findUserAndCall(req, res, userId, inner) {
+function findUserQuizThenCall(req, res, userId, quizId, inner) {
+  // called after finding user
+  function findQuizThenCall(errMsg, user) {
+    if (!quizId) {
+      inner(req, res, errMsg, user, null);
+    } else {
+      quizModel.findById(quizId).exec((err, quiz) => {
+        findQuizThenCall(
+          err
+            ? (errMsg ? errMsg + '<br>' : '')
+            + 'Error finding user: ' + err.toString
+          : null,
+          user);
+      });
+    }
+  }
+  
   if (!userId) {
-    inner(req, res, null, null);
+    findQuizThenCall(null, null);
   } else {
     userModel.findById(userId).exec((err, user) => {
-      inner(req, res, err ? err.toString : null, user);
+      findQuizThenCall(
+        err ? 'Error finding user: ' + err.toString : null, user);
     });
   }
 }
 
-exports.show = (req, res) => findUserAndCall(showInner);
+exports.show = (req, res) => findUserQuizThenCall(showInner);
 
 
 //  function to show the quiz page after searching for user
-function showInner(req, res, errMsg, user) {
+function showInner(req, res, errMsg, user, quiz) {
   // check for user first
   userModel.findById
   
