@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const userModel = mongoose.model('User');
+const quizModel = mongoose.model('Quiz');
 
 /*
 ///////////////////////////////////////////////////////////////////////////
@@ -66,6 +67,12 @@ exports.main = function admin(req, res, next) {
     return;
   }
 
+  quizModel.find().exec((err, quizzes) => {
+    res.render('view-quiz', {
+      quizzes,
+      errMsg: err ? 'Could not find quiz: ' + err.toString() : ''
+    });
+  });
   res.render('view-admin-main', { user: req.session.user });
 };
 
@@ -76,31 +83,12 @@ exports.quiz = function quiz(req, res, next) {
     return;
   }
 
-  if (!req.session.quiz) {
-    // we use nginx, so we need x-forwarded-for
-    quizModel.startNew(
-      req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-      (err, quiz) => {
-        if (err) {
-          res.render('view-error', {
-            message: 'Failure making quiz',
-            error: err
-          });
-        } else {
-          // set session quiz variable, then render view
-          req.session.quiz = quiz;
-          res.render('view-quiz',
-                     { quiz, user: req.session.user });
-        }
-      });
-  } else {
+  quizModel.findById(req.session.quizId).exec((err, quiz) => {
     res.render('view-quiz', {
-      quiz: req.session.quiz,
-      user: req.session.user
+      quiz,
+      errMsg: err ? 'Could not find quiz: ' + err.toString() : ''
     });
-  }
-  
-  res.render('index', { title: 'Express' });
+  });
 };
 
 

@@ -13,7 +13,7 @@ router.get('/restart', quiz.restart);
 router.get('/admin/login', admin.loginShow);
 router.post('/admin/login', admin.loginDo);
 router.get('/admin', admin.main);
-router.get('/admin/:quizid', admin.quiz);
+router.get('/admin/:quizId', admin.quiz);
 router.get('/admin/logout', admin.logout);
 router.get('/admin/register', admin.registerShow);
 router.post('/admin/register', admin.registerAdd);
