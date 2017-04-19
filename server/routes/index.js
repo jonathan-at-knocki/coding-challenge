@@ -11,7 +11,7 @@ router.get('/restart', quiz.restart);
 
 /* admin login */
 router.get('/admin/login', admin.loginShow);
-router.post('/admin/login', admin.loginAdd);
+router.post('/admin/login', admin.loginDo);
 router.get('/admin', admin.main);
 router.get('/admin/:quizid', admin.quiz);
 router.get('/admin/logout', admin.logout);

@@ -2,57 +2,26 @@ const mongoose = require('mongoose');
 
 const userModel = mongoose.model('User');
 
-//  the admin screen
-exports.main = function admin(req, res, next) {
-  if (!req.session.user) {
-    res.redirect('/admin/login');
-    return;
-  }
-
-  res.render('index', { title: 'Express' });
-};
-
-//  the admin screen for one quiz
-exports.quiz = function quiz(req, res, next) {
-  if (!req.session.user) {
-    res.redirect('/admin/login');
-    return;
-  }
-
-  res.render('index', { title: 'Express' });
-};
-
 /*
 ///////////////////////////////////////////////////////////////////////////
 //   LOGIN / LOGOUT
 */
 
-//  logout the admin user
-exports.logout = function logout(req, res, next) {
-  req.session.user = null;
-  res.redirect(req.query.redirect ? req.query.redirect : '/admin/login');
-};
-
 //  login screen
 //  email, errMsg are for showing an error message and prepopulating the
 //  email box
-const loginShow = function loginShow(req, res, next, email, errMsg) {
-  if (req.session.user) {
-    res.redirect('/admin');
-  } else {
-    res.render('view-admin-login', {
-      title: 'Login user',
-      email,
-      errMsg
-    });
-  }
+exports.loginShow = function loginShow(req, res, next, email, errMsg) {
+  res.render('view-admin-login', {
+    title: 'Login user',
+    email,
+    errMsg
+  });
 };
-exports.loginShow = loginShow;
 
-exports.loginAdd = function login(req, res) {
+exports.loginDo = function login(req, res) {
   const email = req.body.email;
   const password = req.body.password;
-  const reshow = msg => loginShow(req, res, null, email, msg);
+  const reshow = msg => exports.loginShow(req, res, null, email, msg);
 
   if (!(email && password)) {
     reshow('Both email and password must be nonblank');
@@ -78,6 +47,63 @@ exports.loginAdd = function login(req, res) {
   });
 };
 
+//  logout the admin user
+exports.logout = function logout(req, res, next) {
+  req.session.user = null;
+  res.redirect(req.query.redirect ? req.query.redirect : '/admin/login');
+};
+
+/*
+///////////////////////////////////////////////////////////////////////////
+//   THE ADMIN PAGES
+*/
+
+
+//  the main admin screen
+exports.main = function admin(req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/admin/login');
+    return;
+  }
+
+  res.render('view-admin-main', { user: req.session.user });
+};
+
+//  the admin screen for one quiz
+exports.quiz = function quiz(req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/admin/login');
+    return;
+  }
+
+  if (!req.session.quiz) {
+    // we use nginx, so we need x-forwarded-for
+    quizModel.startNew(
+      req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+      (err, quiz) => {
+        if (err) {
+          res.render('view-error', {
+            message: 'Failure making quiz',
+            error: err
+          });
+        } else {
+          // set session quiz variable, then render view
+          req.session.quiz = quiz;
+          res.render('view-quiz',
+                     { quiz, user: req.session.user });
+        }
+      });
+  } else {
+    res.render('view-quiz', {
+      quiz: req.session.quiz,
+      user: req.session.user
+    });
+  }
+  
+  res.render('index', { title: 'Express' });
+};
+
+
 /*
 ///////////////////////////////////////////////////////////////////////////
 //   REGISTRATION
@@ -87,15 +113,29 @@ exports.loginAdd = function login(req, res) {
 //  email, errMsg are for showing an error message and prepopulating the
 //  email box
 const registerShow = function registerShow(req, res, next, email, errMsg) {
-  res.render('view-admin-register', {
-    title: 'Register new admin user',
-    email,
-    errMsg
-  });
+  if (!req.session.user) {
+    res.redirect('/admin/login');
+    return;
+  }
+
+  if (req.session.user) {
+    res.render('view-admin-register', {
+      title: 'Register new admin user',
+      email,
+      errMsg
+    });
+  } else {
+    res.redirect('/admin/login');
+  }
 };
 exports.registerShow = registerShow;
 
 exports.registerAdd = function register(req, res) {
+  if (!req.session.user) {
+    res.redirect('/admin/login');
+    return;
+  }
+
   const email = req.body.email;
   const password = req.body.password;
   const reshow = msg => registerShow(req, res, null, email, msg);
