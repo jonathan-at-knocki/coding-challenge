@@ -3,8 +3,12 @@ const mongoose = require('mongoose');
 const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
+// (req, res, user, quiz, errArr)
 // for each function from index, we first find quiz, user
-exports.show = (req, res) => findUserQuizThenCall(showInner);
+exports.show = (req, res) => {
+  showInner()
+  }
+  findUserQuizThenCall(showInner);
 exports.answer = (req, res) => findUserQuizThenCall(answerInner);
 //  restart the current player's history / start new player
 exports.restart = function restart(req, res) {
@@ -46,7 +50,7 @@ function findUserQuizThenCall(req, res, userId, quizId, inner) {
 }
 
 //  function to show the quiz page
-function showInner(req, res, errArr, user, quiz) {
+function showInner(req, res, user, quiz, errArr) {
   if (!quiz) {
     // no quiz started. start a new one
 
@@ -68,7 +72,7 @@ function showInner(req, res, errArr, user, quiz) {
 }
 
 //  process an answer
-function answerInner(req, res, errArr, user, quiz) {
+function answerInner(req, res, user, quiz, errArr) {
   var answer = req.body.answer;
 
   const render = (errMsg) => {
