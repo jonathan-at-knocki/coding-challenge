@@ -1,0 +1,9 @@
+extends view-admin-submit_creds
+
+block variables
+  - var actionLoc = "/admin/register"
+  - var submitText = "Add user"
+
+block preerror
+  div
+    a(href="/admin/login")= Login with existing user

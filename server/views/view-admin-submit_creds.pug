@@ -1,0 +1,16 @@
+-// This is for layouts that have an email and password prompt
+
+extends view-layout
+
+block content
+  h1= title
+  block preerror
+  h2#error= errMsg 
+  form(action="#{actionLoc}", method="post")
+    label
+      | email:
+      input#email(type="email", name="email", value="#{email}")
+    label
+      | password:
+      input#password(type="password", name="password")
+    button(type="submit")= submitText

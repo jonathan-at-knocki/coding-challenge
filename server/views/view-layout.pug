@@ -1,0 +1,29 @@
+doctype html
+//- variables is to set any document-wide variables
+block variables
+html
+  head
+    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  //- option to include classes in body
+  
+  body(class="#{bodyClass}")
+    header
+      div.main-link
+        a(href="/") Quizical
+      div.links-bar.links-admin
+        if user
+          a.link-admin-main(href="/admin")= user.email
+          a.link-logout(href="/admin/logout?redirect=/admin/login") logout
+        else
+          a(href="/admin/login")= login
+    block content
+    
+    footer
+      .row
+        .col-xs-12
+          small Jonathan Ganc, for Knocki
+    
+    script(src='/javascripts/jquery-3.2.1.min.js')
+    script(src='/bootstrap/js/bootstrap.min.js')

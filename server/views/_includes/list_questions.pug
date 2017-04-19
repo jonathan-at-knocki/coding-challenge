@@ -1,0 +1,51 @@
+//- functions for listing questions
+
+//- show a quiz, including beginning with current grade
+//- should be passed a block to deal with the differences in how the last
+//- question is treated in the admin screen vs. the quiz screen
+//- (since the last question has not been answered yet, it should be
+//- treated differently)
+mixin showQuiz
+  -
+    var gradeClass, grade
+    if (quiz.questionsAnswered === 0) {
+      gradeClass = "grade-newquiz"
+    } else {
+      grade = quiz.questionsCorrect / quiz.questionsCorrect
+      if (grade < .7) {
+        gradeClass = "grade-f"
+      } else if (grade < .8) {
+        gradeClass = "grade-c"
+      } else if (grade < .9) {
+        gradeClass = "grade-b"
+      } else if (grade < 1) {
+        gradeClass = "grade-a"
+      } else {
+        gradeClass = "grade-perfect"
+      }
+    }  
+  div(class="grade #{gradeClass}")
+    span.questionsCorrect= quiz.questionsCorrect
+    span.questionsAnswered= quiz.questionsAnswered
+    span.gradePercent= quiz.questionsAnswered === 0 ? "" : grade
+  - var questions = quiz.questions
+  for (var i = 0; i <= questions.length - 2; i++)
+    - var question = questions[i]
+    - 
+      var isCorrectClass = question.answerCorrect == question.answerGiven 
+        ? "correct" : "incorrect"
+    div(class="question #{isCorrectClass}")
+      span.asktime= question.askTime
+      span.number= i + 1
+      span.lhs= question.number1
+      span.rhs= question.number2
+      span.answerGiven= question.answerGiven
+      span.answerCorrect= question.answerCorrect
+  //- last question
+  - var question = questions[questions.length - 1]
+  div(class="question last-question")
+    span.asktime= question.askTime
+    span.number= i + 1
+    span.lhs= question.number1
+    span.rhs= question.number2
+    block

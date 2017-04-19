@@ -1,0 +1,14 @@
+//- the view for a single user's quiz in the admin panel
+
+extends view-layout
+
+block content
+  h1 Quiz for quiz.ip
+  //- place for errors
+  h3#error= errMsg
+  a(href="/restart") Restart quiz
+  +showQuiz
+    //- block for last question
+    form.answer(action="/", method="post")
+      input(type="number", name="answer")
+      button(type="submit") Submit
