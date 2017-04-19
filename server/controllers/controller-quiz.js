@@ -1,70 +1,18 @@
 const mongoose = require('mongoose');
 
-const findByIdAndMore = require('./_includes/find_by_id_and_more');
+const common = require('./_includes/controller-common');
 
 const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
-// (req, res, user, quiz, errArr)
-// for each function from index, we first find quiz, user
-exports.show = (req, res) => {
-  showInner()
-  }
-  findUserQuizThenCall(showInner);
-exports.answer = (req, res) => findUserQuizThenCall(answerInner);
+// for each function from index, we first need to find quiz, user
+exports.show = common.findQuizUserAndCallInner(showInner);
+exports.answer = common.findQuizUserAndCallInner(answerInner);
 //  restart the current player's history / start new player
 exports.restart = function restart(req, res) {
   req.session.quiz = null;
   res.redirect('/');
 };
-
-// helper function which extracts user, quiz from session variables and
-//   calls an inner function with signature:
-//     inner(req, res, user, quiz, errArr)
-// errArr defaults to an empty array
-function findQuizUserAndCallInner(req, res, inner) {
-  if (!errArr) {
-    errArr = [];
-  }
-  findByIdAndMore(userModel, req.session.userId, 'user', errArr, (user) => {
-    findByIdAndMore(quizModel, req.session.quizId, 'quiz', errArr, (quiz) => {
-      inner(req, res, user, quiz, errArr);
-    });
-  });
-}
-
-//  find user from userId, quiz from quizId and then call inner.
-//
-//  form of inner: inner(req, res, errArr, user, quiz),
-//  where errArr is an array of appropriate error messages (or [] if none).
-//
-//  if userId not given, simply call inner with user as null
-function findUserQuizThenCall(req, res, userId, quizId, inner) {
-  // findQuizThenCall called after finding user
-  function findQuizThenCall(errArr, user) {
-    if (!quizId) {
-      inner(req, res, errArr, user, null);
-    } else {
-      quizModel.findById(quizId).exec((err, quiz) => {
-        inner(req, res,
-              err
-              ? errArr.concat(
-                ['Error finding user: ' + err.toString()])
-              : errArr,
-              user, quiz);
-      });
-    }
-  }
-
-  if (!userId) {
-    findQuizThenCall([], null);
-  } else {
-    userModel.findById(userId).exec((err, user) => {
-      findQuizThenCall(
-        err ? 'Error finding user: ' + err.toString : [], user);
-    });
-  }
-}
 
 //  function to show the quiz page
 function showInner(req, res, user, quiz, errArr) {
