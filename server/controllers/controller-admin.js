@@ -11,37 +11,36 @@ const common = require('./_includes/controller-common');
 */
 
 // helper function that is passed to an express app callback and looks up
-// user from session variables, then calls callback with signature:
-//   callback(req, res, user, errArr)
+// user from session variables, then either redirects to login or calls
+// callback with signature:
+//   callback(user, errArr)
 //
 // this should be the first function called by any routing path into the
 // admin console
 //
 // if no user, redirects to "/admin/login"
 // (thus, this cannot be used for /admin/login)
-function validateAndCall(callback) {
-  return (req, res, next) => {
-    const errArr = [];
-    const redirect = () => {
-      req.session.userId = null;
-      res.redirect('/admin/login?redirect=' + encodeURI(req.url));
-    };
-    if (!req.session.userId) {
-      redirect();
-      return; // eslint-disable-line no-useless-return
-    } else { // eslint-disable-line no-else-return
-      userModel.findById(req.session.userId).exec((err, user) => {
-        common.addToErrArr(err, 'user', errArr);
-        if (err) {
-          redirect();
-          return; // eslint-disable-line no-useless-return
-        } else { // eslint-disable-line no-else-return
-          callback(req, res, user, errArr);
-          return; // eslint-disable-line no-useless-return
-        }
-      });
-    }
+function validateAndCall(req, res, callback) {
+  const errArr = [];
+  const redirect = () => {
+    req.session.userId = null;
+    res.redirect('/admin/login?redirect=' + encodeURI(req.url));
   };
+  if (!req.session.userId) {
+    redirect();
+    return; // eslint-disable-line no-useless-return
+  } else { // eslint-disable-line no-else-return
+    userModel.findById(req.session.userId).exec((err, user) => {
+      common.addToErrArr(err, 'user', errArr);
+      if (err) {
+        redirect();
+        return; // eslint-disable-line no-useless-return
+      } else { // eslint-disable-line no-else-return
+        callback(user, errArr);
+        return; // eslint-disable-line no-useless-return
+      }
+    });
+  }
 }
 
 /*
@@ -140,14 +139,12 @@ exports.logout = function logout(req, res, next) {
 
 function validateAndFindQuizzesAndCallInner(inner) {
   return (req, res, next) => {
-    var errArr = [];
-    common.findByIdAndMore(
-      userModel, req.session.userId, 'user', errArr, (user) => {
-        quizModel.find().exec((err, quizzes) => {
-          common.addToErrArr(err, 'all quizzes', errArr);
-          inner(req, res, user, quizzes, errArr);
-        });
+    validateAndCall(req, res, (user, errArr) => {
+      quizModel.find().exec((err, quizzes) => {
+        common.addToErrArr(err, 'all quizzes', errArr);
+        inner(req, res, user, quizzes, errArr);
       });
+    });
   };
 }
 
@@ -169,11 +166,6 @@ function validateAndFindOneQuizAndCallInner(inner) {
 
 //  the main admin screen
 exports.main = function admin(req, res, next) {
-  if (!req.session.user) {
-    res.redirect('/admin/login');
-    return;
-  }
-
   quizModel.find().exec((err, quizzes) => {
     res.render('view-quiz', {
       quizzes,
