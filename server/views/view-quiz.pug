@@ -2,14 +2,14 @@
 
 extends view-layout
 
+include _includes/quiz_functions
+
 block variables
   - var bodyClass = "quiz"
+  - var title = "Multiplication quiz"
 
 block content
-  h1 Multiplication quiz
-  //- place for errors
-  h3#error= errMsg
-  a(href="/restart") Restart quiz
+  a.restart(href="/restart") Restart quiz
   +showQuiz
     //- block for last question
     form.answer(action="/", method="post")

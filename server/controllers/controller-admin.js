@@ -3,7 +3,17 @@ const mongoose = require('mongoose');
 const userModel = mongoose.model('User');
 
 //  the admin screen
-exports.admin = function admin(req, res, next) {
+exports.main = function admin(req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/admin/login');
+    return;
+  }
+
+  res.render('index', { title: 'Express' });
+};
+
+//  the admin screen for one quiz
+exports.quiz = function quiz(req, res, next) {
   if (!req.session.user) {
     res.redirect('/admin/login');
     return;

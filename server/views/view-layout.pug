@@ -1,6 +1,8 @@
 doctype html
 //- variables is to set any document-wide variables
 block variables
+//- if quiz_functions.pug is included, it will define functions here
+block quizFunctionsHook
 html
   head
     title= title
@@ -19,6 +21,8 @@ html
         else
           a(href="/admin/login")= login
     h1= title
+    h3#error= errMsg
+
     block content
     
     footer

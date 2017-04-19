@@ -1,0 +1,38 @@
+//- the initial/main view for the admin panel
+
+//- expects quizzes variable
+
+extends view-admin-base
+
+block variablesAdmin
+  - var title = Quizzes
+  - bodyClass += " admin-main"
+
+block content
+  table
+    tr.table-header
+      th.quiz-time start time
+      th.quiz-ip start IP
+      th.quiz-correct nr. correctly answered
+      th.quiz-answered nr. total answered
+      th.quiz-score score
+  for quiz in quizzes
+    - 
+      theGradeClass 
+        = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
+    tr(class="table-row #{theGradeClass}")
+      - 
+        var date = quiz.startTime
+        date = date.toLocaleDateString("en-US")
+          + ' ' + date.toLocaleTimeString("en-US", {hour12: false})
+      span.date= date
+      td.quiz-time= date
+      td.quiz-ip
+        a(href=)= quiz.startIp
+      td.quiz-correct= quiz.questionsCorrect
+      td.quiz-answered= quiz.questionsAnswered
+      - 
+        var theGradePercentStr
+          = gradePercentStr(quiz.questionsAnswered, quiz.questionsCorrect);
+      td.quiz-score= theGradePercentStr
+      

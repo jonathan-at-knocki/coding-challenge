@@ -1,14 +1,13 @@
 //- the view for a single user's quiz in the admin panel
 
-extends view-layout
+extends view-admin-base
+
+block variablesAdmin
+  - var title = Quiz for #{adminQuiz.ip}
+  - bodyClass += " admin-quiz"
 
 block content
-  h1 Quiz for quiz.ip
-  //- place for errors
-  h3#error= errMsg
-  a(href="/restart") Restart quiz
+  a.link-admin-main(href="/admin") Back
   +showQuiz
     //- block for last question
-    form.answer(action="/", method="post")
-      input(type="number", name="answer")
-      button(type="submit") Submit
+    span.current-q

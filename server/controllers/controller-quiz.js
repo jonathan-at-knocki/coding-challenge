@@ -54,18 +54,6 @@ exports.answer = function answer(req, res) {
   }
 };
 
-// function that actually renders the quiz. Called by show()
-function renderQuiz(err, quiz, req, res) {
-  if (err) {
-    res.render('view-error', {
-      message: 'Failure making quiz',
-      error: err
-    });
-  } else {
-    res.render('view-quiz', { quiz, user: req.session.user });
-  }
-}
-
 //  restart the current player's history / start new player
 exports.restart = function restart(req, res) {
   req.session.quiz = null;
