@@ -7,6 +7,42 @@ const common = require('./_includes/controller-common');
 
 /*
 ///////////////////////////////////////////////////////////////////////////
+//   USER, QUIZ LOOKUP FUNCS
+*/
+
+// helper function that is passed to an express app callback and looks up
+// user from session variables, then calls callback with signature:
+//   callback(req, res, user, errArr)
+//
+// this should be the first function called by any routing path into the
+// admin console
+//
+// if no user, redirects to "/admin/login"
+// (thus, this cannot be used for /admin/login)
+function findUserAndCall(callback) {
+  return (req, res, next) => {
+    const errArr = [];
+    const redirect
+          = () => res.redirect('/admin/login?redirect=' + encodeURI(req.url));
+    if (!req.session.userId) {
+      redirect();
+      return; // eslint-disable-line no-useless-return
+    } else { // eslint-disable-line no-else-return
+      userModel.findById(req.session.userId).exec((err, user) => {
+        common.addToErrArr(err, 'user', errArr);
+        if (err) {
+          redirect();
+          return; // eslint-disable-line no-useless-return
+        } else { // eslint-disable-line no-else-return
+          callback(req, res, user, errArr);
+        }
+      });
+    }
+  };
+}
+
+/*
+///////////////////////////////////////////////////////////////////////////
 //   LOGIN / LOGOUT
 */
 

@@ -1,12 +1,30 @@
 const mongoose = require('mongoose');
 
+const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
 const common = require('./_includes/controller-common');
 
+// helper function which returns a function that can be passed to an
+//  express app callback and which extracts user, quiz from session
+//  variables before calling inner with signature:
+//     inner(req, res, user, quiz, errArr)
+function findQuizUserAndCallInner(inner) {
+  return (req, res, next) => {
+    var errArr = [];
+    common.findByIdAndMore(
+      userModel, req.session.userId, 'user', errArr, (user) => {
+        common.findByIdAndMore(
+          quizModel, req.session.quizId, 'quiz', errArr, (quiz) => {
+            inner(req, res, user, quiz, errArr);
+          });
+      });
+  };
+}
+
 // for each function from index, we first need to find quiz, user
-exports.show = common.findQuizUserAndCallInner(showInner);
-exports.answer = common.findQuizUserAndCallInner(answerInner);
+exports.show = findQuizUserAndCallInner(showInner);
+exports.answer = findQuizUserAndCallInner(answerInner);
 //  restart the current player's history / start new player
 exports.restart = function restart(req, res) {
   req.session.quizId = null;

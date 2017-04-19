@@ -1,9 +1,6 @@
 //  some common helpers functions
 const mongoose = require('mongoose');
 
-const userModel = mongoose.model('User');
-const quizModel = mongoose.model('Quiz');
-
 //  add error string errArr as appropriate, with error prefixed by
 //  appropriate string using itemName
 exports.addToErrArr = function addToErrArr(err, itemName, errArr) {
@@ -33,23 +30,3 @@ exports.findByIdAndMore = function findByIdAndMore(
     });
   }
 };
-const findByIdAndMore = exports.findByIdAndMore;
-
-
-// helper function which returns a function that can be passed to an
-//  express router callback and which extracts user, quiz from session
-//  variables before calling inner with signature:
-//     inner(req, res, user, quiz, errArr)
-exports.findQuizUserAndCallInner = function findQuizUserAndCallInner(inner) {
-  return (req, res, next) => {
-    var errArr = [];
-    findByIdAndMore(
-      userModel, req.session.userId, 'user', errArr, (user) => {
-        findByIdAndMore(
-          quizModel, req.session.quizId, 'quiz', errArr, (quiz) => {
-            inner(req, res, user, quiz, errArr);
-          });
-      });
-  };
-};
-
