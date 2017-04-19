@@ -3,6 +3,15 @@ const mongoose = require('mongoose');
 const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
+// for each function from index, we first find quiz, user
+exports.show = (req, res) => findUserQuizThenCall(showInner);
+exports.answer = (req, res) => findUserQuizThenCall(answerInner);
+//  restart the current player's history / start new player
+exports.restart = function restart(req, res) {
+  req.session.quiz = null;
+  res.redirect('/');
+};
+
 //  find user from userId, quiz from quizId and then call inner.
 //
 //  form of inner: inner(req, res, errArr, user, quiz),
@@ -36,8 +45,6 @@ function findUserQuizThenCall(req, res, userId, quizId, inner) {
   }
 }
 
-exports.show = (req, res) => findUserQuizThenCall(showInner);
-
 //  function to show the quiz page
 function showInner(req, res, errArr, user, quiz) {
   if (!quiz) {
@@ -49,7 +56,7 @@ function showInner(req, res, errArr, user, quiz) {
       (err, quiz) => {
         if (err) {
           quiz = null;
-          errArr.push('Error startig new quiz: ' + err.toString());
+          errArr.push('Error starting new quiz: ' + err.toString());
         } else {
           req.session.quizId = quiz._id;
         }
@@ -61,16 +68,13 @@ function showInner(req, res, errArr, user, quiz) {
 }
 
 //  process an answer
-exports.answer = function answer(req, res) {
-  const quiz = req.session.quiz;
+function answerInner(req, res, errArr, user, quiz) {
   var answer = req.body.answer;
 
-  const render = errArr =>
-        res.render('view-quiz', {
-          quiz,
-          user: req.session.user,
-          errArr
-        });
+  const render = (errMsg) => {
+    if (errMsg) errArr.push(errMsg);
+    res.render('view-quiz', { quiz, user, errArr });
+  };
   // get quiz for session
   if (!quiz) {
     render('Answer given with no quiz started');
@@ -88,10 +92,4 @@ exports.answer = function answer(req, res) {
       );
     }
   }
-};
-
-//  restart the current player's history / start new player
-exports.restart = function restart(req, res) {
-  req.session.quiz = null;
-  res.redirect('/');
-};
+}
