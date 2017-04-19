@@ -16,11 +16,8 @@ function findUserQuizThenCall(req, res, userId, quizId, inner) {
       inner(req, res, errMsg, user, null);
     } else {
       quizModel.findById(quizId).exec((err, quiz) => {
-        findQuizThenCall(
-          err
-            ? (errMsg ? errMsg + '<br>' : '')
-            + 'Error finding user: ' + err.toString
-          : null,
+        findQuizThenCall(errMsg.concat(
+          ['Error finding user: ' + err.toString()]),
           user);
       });
     }
