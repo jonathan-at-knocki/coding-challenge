@@ -22,8 +22,10 @@ const common = require('./_includes/controller-common');
 function findUserAndCall(callback) {
   return (req, res, next) => {
     const errArr = [];
-    const redirect
-          = () => res.redirect('/admin/login?redirect=' + encodeURI(req.url));
+    const redirect = () => {
+      req.session.userId = null;
+      res.redirect('/admin/login?redirect=' + encodeURI(req.url));
+    };
     if (!req.session.userId) {
       redirect();
       return; // eslint-disable-line no-useless-return
@@ -35,6 +37,7 @@ function findUserAndCall(callback) {
           return; // eslint-disable-line no-useless-return
         } else { // eslint-disable-line no-else-return
           callback(req, res, user, errArr);
+          return; // eslint-disable-line no-useless-return
         }
       });
     }
@@ -46,17 +49,42 @@ function findUserAndCall(callback) {
 //   LOGIN / LOGOUT
 */
 
+//  helper for login functions. redirect if user is logged in
+function redirectIfLoggedIn(req) {
+  
+}
+
 //  login screen
 //  email, errArr are for showing an error message and prepopulating the
-//  email box
+//  email box when a faulty login is tried
 exports.loginShow = function loginShow(req, res, next, email, errArr) {
-  res.render('view-admin-login', {
-    title: 'Login user',
-    email,
-    errArr
-  });
+  // initialize errArr;
+  if (!errArr) errArr = [];
+
+  function render() {
+    res.render('view-admin-login', {
+      title: 'Login user',
+      email,
+      errArr
+    });
+  }
+
+  if (req.session.userId) {
+    userModel.findById(req.session.userId).exec((err, user) => {
+      if (err) {
+        req.session.userId = null;
+        render();
+        return;
+      }
+      res.redirect('/admin');
+    });
+  }
+
+  render();
 };
 
+
+// act on a login request
 exports.loginDo = function login(req, res) {
   const email = req.body.email;
   const password = req.body.password;
