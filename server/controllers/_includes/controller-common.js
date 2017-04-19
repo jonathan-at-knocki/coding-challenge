@@ -4,6 +4,12 @@ const mongoose = require('mongoose');
 const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
+//  add error string errArr as appropriate, with error prefixed by
+//  appropriate string using itemName
+exports.addToErrArr = function addToErrArr(err, itemName, errArr) {
+  
+}
+
 //  findById on model and then append to errArr as necessary.
 //  errArr is the current errArr, which might be altered (as well as being
 //    passed to callback)
@@ -46,32 +52,3 @@ exports.findQuizUserAndCallInner = function findQuizUserAndCallInner(inner) {
   };
 };
 
-// helper function which extracts user from session variables and
-//   calls an inner function with signature:
-//     inner(req, res, user, errArr)
-// errArr defaults to an empty array
-exports.findUserAndCallInner = function findUserAndCallInner(
-  req, res, inner, errArr) {
-  if (!errArr) {
-    errArr = [];
-  }
-  findByIdAndMore(userModel, req.session.userId, 'user', errArr, (user) => {
-    inner(req, res, user, errArr);
-  });
-};
-
-// helper function which extracts user, quiz from session variables and
-//   calls an inner function with signature:
-//     inner(req, res, user, quiz, errArr)
-// errArr defaults to an empty array
-exports.findQuizUserAndCallInner = function findQuizUserAndCallInner(
-  req, res, inner, errArr) {
-  if (!errArr) {
-    errArr = [];
-  }
-  findByIdAndMore(userModel, req.session.userId, 'user', errArr, (user) => {
-    findByIdAndMore(quizModel, req.session.quizId, 'quiz', errArr, (quiz) => {
-      inner(req, res, user, quiz, errArr);
-    });
-  });
-};

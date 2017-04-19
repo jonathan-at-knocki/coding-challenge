@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
 
+const common = require('./_includes/controller-common');
+
 /*
 ///////////////////////////////////////////////////////////////////////////
 //   LOGIN / LOGOUT
@@ -50,7 +52,7 @@ exports.loginDo = function login(req, res) {
 
 //  logout the admin user
 exports.logout = function logout(req, res, next) {
-  req.session.user = null;
+  req.session.userId = null;
   res.redirect(req.query.redirect ? req.query.redirect : '/admin/login');
 };
 
@@ -58,6 +60,25 @@ exports.logout = function logout(req, res, next) {
 ///////////////////////////////////////////////////////////////////////////
 //   THE ADMIN PAGES
 */
+
+// equivalent to findQuizUserAndCallInner but for array of quizzes
+// thus, inner has signature:
+//   inner(req, res, user, quizzes, errArr),
+// where quizzes is an array of all quizzes
+function findQuizzesUserAndCallInner(inner) {
+  return (req, res, next) => {
+    var errArr = [];
+    common.findByIdAndMore(
+      userModel, req.session.userId, 'user', errArr, (user) => {
+        quizModel.find()
+        findByIdAndMore(
+          quizModel, req.session.quizId, 'quiz', errArr, (quiz) => {
+            inner(req, res, user, quiz, errArr);
+          });
+      });
+  };
+};
+
 
 
 //  the main admin screen

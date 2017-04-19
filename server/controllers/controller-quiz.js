@@ -1,16 +1,15 @@
 const mongoose = require('mongoose');
 
-const common = require('./_includes/controller-common');
-
-const userModel = mongoose.model('User');
 const quizModel = mongoose.model('Quiz');
+
+const common = require('./_includes/controller-common');
 
 // for each function from index, we first need to find quiz, user
 exports.show = common.findQuizUserAndCallInner(showInner);
 exports.answer = common.findQuizUserAndCallInner(answerInner);
 //  restart the current player's history / start new player
 exports.restart = function restart(req, res) {
-  req.session.quiz = null;
+  req.session.quizId = null;
   res.redirect('/');
 };
 
