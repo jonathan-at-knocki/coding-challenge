@@ -35,13 +35,13 @@ block quizFunctionsHook
 mixin showQuiz
   if quiz
     - 
-      theGradeClass 
+      var theGradeClass 
         = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
     div(class='grade ' + theGradeClass)
       span.questionsCorrect= quiz.questionsCorrect
       span.questionsAnswered= quiz.questionsAnswered
       - 
-        theGradePercentStr
+        var theGradePercentStr
           = gradePercentStr(quiz.questionsCorrect, quiz.questionsAnswered);
       span.gradePercent= theGradePercentStr
     - var questions = quiz.questions
