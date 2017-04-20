@@ -42,24 +42,21 @@ html
               if (!isLogin)
                 li
                   a(href="/admin/login") login
-    .container
-      #title
-        .container
-          h1= title
-      #err-msg
-        .container
-          //- generate errMsg from errArr
-          -
-            var errMsg = errArr ? errArr.map(
-              (err) => common.escapeHtml(err.toString())).join('<br>') : ''
+    #title.container
+      h1= title
+    #err-msg.container
+      //- generate errMsg from errArr
+      -
+        var errMsg = errArr ? errArr.map(
+          (err) => common.escapeHtml(err.toString())).join('<br>') : ''
 
-          h3#error= errMsg
+      h3#error= errMsg
 
-      block content
+    block content
 
-      footer
-        .container
-          small Jonathan Ganc, for Knocki
+    footer
+      .container
+        small Jonathan Ganc, for Knocki
 
     script(src='/javascripts/jquery-3.2.1.min.js')
     script(src='/bootstrap/js/bootstrap.min.js')
