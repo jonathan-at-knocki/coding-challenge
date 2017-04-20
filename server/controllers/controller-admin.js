@@ -58,8 +58,7 @@ exports.loginDo = function login(req, res) {
     const email = req.body.email;
     const password = req.body.password;
     const reshow
-          = msg => exports.loginShowReal(
-            req, res, null, email, msg ? [msg] : []);
+          = msg => loginShowReal(req, res, null, email, msg ? [msg] : []);
 
     if (!(email && password)) {
       reshow('Both email and password must be nonblank');

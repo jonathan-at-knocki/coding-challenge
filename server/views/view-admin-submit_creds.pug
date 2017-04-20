@@ -1,12 +1,12 @@
--// This is for layouts that have an email and password prompt
+//- This is for layouts that have an email and password prompt
 
 extends view-admin-base
 
 block content
-  form(action="#{actionLoc}", method="post")
+  form(action=actionLoc, method="post")
     label
       | email:
-      input#email(type="email", name="email", value="#{email}")
+      input#email(type="email", name="email", value=email)
     label
       | password:
       input#password(type="password", name="password")
