@@ -26,21 +26,18 @@ block content
       if (quiz.isOk())
         - 
           var theGradeClass 
-            = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
+            = common.gradeClass(
+              quiz.questionsCorrect, quiz.questionsAnswered);
         tr(class='table-row ' + theGradeClass)
-          - 
-            var date = quiz.startTime
-            date = date.toLocaleDateString('en-US')
-              + ' ' + date.toLocaleTimeString('en-US', {hour12: false})
-          td.quiz-time= date
+          td.quiz-time= common.printDate(quiz.startTime)
           td.quiz-ip
             a(href='/admin/quiz/' + quiz._id)= quiz.startIp
           td.quiz-correct= quiz.questionsCorrect
           td.quiz-answered= quiz.questionsAnswered
           - 
             var theGradePercentStr
-              = gradePercentStr(quiz.questionsAnswered, 
-                                quiz.questionsCorrect);
+              = common.gradePercentStr(
+                quiz.questionsAnswered, quiz.questionsCorrect);
           td.quiz-score= theGradePercentStr
       else
         tr.table-row.bad-quiz

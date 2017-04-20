@@ -11,6 +11,9 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
 const credentials = require('./credentials.js');
 
+const commonViewFcns
+      = require('./server/views/common-view-fcns/common-view-fcns.js');
+
 require('./server/models/db');
 
 const index = require('./server/routes/index');
@@ -42,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // to pass into all pug contexts
 app.use((req, res, next) => {
   res.locals.url = req.url;
+  res.locals.common = commonViewFcns;
   // for debugging, pass console into locals
   res.locals.console = console;
   next();

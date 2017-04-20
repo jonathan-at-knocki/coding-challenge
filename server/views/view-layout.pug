@@ -8,7 +8,7 @@ html
     meta(name='viewport', content='width=device-width, initial-scale=1')
     
     title= title
-    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/bootstrap/css/cosmo-bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -19,7 +19,7 @@ html
     <![endif]-->
   //- option to include classes in body
   body(class=bodyClass)
-    header.navbar.navbar-inverse.navbar-fixed-top
+    nav.navbar.navbar-inverse.navbar-fixed-top
       .container
         .navbar-header
           button(type="button", class="navbar-toggle collapsed", 
@@ -42,32 +42,24 @@ html
               if (!isLogin)
                 li
                   a(href="/admin/login") login
-    #title
-      .container
-        h1= title
-    #err-msg
-      .container
-        //- generate errMsg from errArr
-        -
-          // from http://stackoverflow.com/a/6234804
-          function escapeHtml(unsafe) {
-            return unsafe
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#039;");
-          }
-          var errMsg = errArr ? errArr.map(
-            (err) => escapeHtml(err.toString())).join('<br>') : ''
+    .container
+      #title
+        .container
+          h1= title
+      #err-msg
+        .container
+          //- generate errMsg from errArr
+          -
+            var errMsg = errArr ? errArr.map(
+              (err) => common.escapeHtml(err.toString())).join('<br>') : ''
 
-        h3#error= errMsg
+          h3#error= errMsg
 
-    block content
-    
-    footer
-      .container
-        small Jonathan Ganc, for Knocki
-    
+      block content
+
+      footer
+        .container
+          small Jonathan Ganc, for Knocki
+
     script(src='/javascripts/jquery-3.2.1.min.js')
     script(src='/bootstrap/js/bootstrap.min.js')

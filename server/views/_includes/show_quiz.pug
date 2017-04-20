@@ -1,36 +1,3 @@
-//- functions for listing questions
-
-append variables
-  //- we separate out these two functions because they are used both in
-  //- showQuiz and in the admin page
-
-  //- grade percent as a string, properly accounting for people who have
-  //- answered no questions
-  - 
-    function gradePercentStr(questionsAnswered, questionsCorrect) {
-      if (!(typeof questionsCorrect === 'number'
-            && typeof questionsAnswered === 'number')
-          || questionsAnswered === 0
-          || isNaN(questionsCorrect / questionsAnswered)) return "n/a";
-      else 
-        return Math.round(questionsCorrect / questionsAnswered * 100) + '%';
-    }  
-  -
-    // get the grade class for questions answered, questions correct
-    function gradeClass(questionsAnswered, questionsCorrect) {
-      var gradeClass, grade;
-      if (questionsAnswered === 0) {
-        return "grade-newquiz";
-      } else {
-        grade = questionsCorrect / questionsAnswered;
-        if (grade < .7) return "grade-f";
-        else if (grade < .8) return "grade-c";
-        else if (grade < .9) return "grade-b";
-        else if (grade < 1) return "grade-a";
-        else return "grade-perfect";
-      }  
-    }
-
 //- show a quiz, including showing the current grade
 //- should be passed a block to deal with the differences in how the last
 //- question is treated in the admin screen vs. the quiz screen
@@ -42,13 +9,14 @@ mixin showQuiz
       if quiz
         - 
           var theGradeClass 
-            = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
+            = common.gradeClass(
+              quiz.questionsCorrect, quiz.questionsAnswered);
         div(class='grade ' + theGradeClass)
           span.questionsCorrect= quiz.questionsCorrect
           span.questionsAnswered= quiz.questionsAnswered
           - 
             var theGradePercentStr
-              = gradePercentStr(
+              = common.gradePercentStr(
                 quiz.questionsAnswered, quiz.questionsCorrect);
           span.gradePercent= theGradePercentStr
         - var questions = quiz.questions
@@ -62,8 +30,8 @@ mixin showQuiz
                   = question.answerCorrect === question.answerGiven 
                   ? "correct" : "incorrect"
               div(class='question ' + isCorrectClass)
-                span.asktime= question.askTime
                 span.number= i + 1
+                span.asktime= common.printDate(question.askTime)
                 span.lhs= question.number1
                 span.rhs= question.number2
                 span.answerGiven= question.answerGiven
