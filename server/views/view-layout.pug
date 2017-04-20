@@ -19,16 +19,16 @@ html
     <![endif]-->
   //- option to include classes in body
   body(class=bodyClass)
-    nav.navbar.navbar-inverse.navbar-fixed-top
+    header.navbar.navbar-inverse.navbar-fixed-top
       .container
         .navbar-header
           button(type="button", class="navbar-toggle collapsed", 
             data-toggle="collapse", data-target="#navbar", 
             aria-expanded="false", aria-controls="navbar")
-              span#sr-only Toggle navigation
-              span#icon-bar
-              span#icon-bar
-              span#icon-bar
+              span.sr-only Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
           a.navbar-brand(href='/') Quizical
         #navbar.navbar-collapse.collapse
           ul.nav.navbar-nav
@@ -37,35 +37,37 @@ html
               li
                 a.link-admin-main(href='/admin')= user.email
               li
-                a.link-logout(href='/admin/logout?redirect=' + req.url) logout
+                a.link-logout(href='/admin/logout?redirect=' + url) logout
             else
               if (!isLogin)
                 li
                   a(href="/admin/login") login
+    #title
+      .container
+        h1= title
+    #err-msg
+      .container
+        //- generate errMsg from errArr
+        -
+          // from http://stackoverflow.com/a/6234804
+          function escapeHtml(unsafe) {
+            return unsafe
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+          }
+          var errMsg = errArr ? errArr.map(
+            (err) => escapeHtml(err.toString())).join('<br>') : ''
 
-    h1= title
-    //- generate errMsg from errArr
-    -
-      // from http://stackoverflow.com/a/6234804
-      function escapeHtml(unsafe) {
-        return unsafe
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
-      var errMsg = errArr ? errArr.map(
-        (err) => escapeHtml(err.toString())).join('<br>') : ''
-       
-    h3#error= errMsg
+        h3#error= errMsg
 
     block content
     
     footer
-      .row
-        .col-xs-12
-          small Jonathan Ganc, for Knocki
+      .container
+        small Jonathan Ganc, for Knocki
     
     script(src='/javascripts/jquery-3.2.1.min.js')
     script(src='/bootstrap/js/bootstrap.min.js')

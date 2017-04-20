@@ -37,41 +37,44 @@ append variables
 //- (since the last question has not been answered yet, it should be
 //- treated differently)
 mixin showQuiz
-  if quiz
-    - 
-      var theGradeClass 
-        = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
-    div(class='grade ' + theGradeClass)
-      span.questionsCorrect= quiz.questionsCorrect
-      span.questionsAnswered= quiz.questionsAnswered
-      - 
-        var theGradePercentStr
-          = gradePercentStr(quiz.questionsAnswered, quiz.questionsCorrect);
-      span.gradePercent= theGradePercentStr
-    - var questions = quiz.questions
-    div.questions
-      //- prevent problems with undefined questions
-      if questions
-        - for (var i = 0; i <= questions.length - 2; i++)
-          - var question = questions[i]
+  div#quiz
+    .container
+      if quiz
+        - 
+          var theGradeClass 
+            = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
+        div(class='grade ' + theGradeClass)
+          span.questionsCorrect= quiz.questionsCorrect
+          span.questionsAnswered= quiz.questionsAnswered
           - 
-            var isCorrectClass 
-              = question.answerCorrect === question.answerGiven 
-              ? "correct" : "incorrect"
-          div(class='question ' + isCorrectClass)
-            span.asktime= question.askTime
-            span.number= i + 1
-            span.lhs= question.number1
-            span.rhs= question.number2
-            span.answerGiven= question.answerGiven
-            span.answerCorrect= question.answerCorrect
-        //- last question
-        - var question = questions[questions.length - 1]
-        div.question.last-question
-          span.asktime= question.askTime
-          span.number= i + 1
-          span.lhs= question.number1
-          span.rhs= question.number2
-          block
-      else
-        span.noquestions No questions found
+            var theGradePercentStr
+              = gradePercentStr(
+                quiz.questionsAnswered, quiz.questionsCorrect);
+          span.gradePercent= theGradePercentStr
+        - var questions = quiz.questions
+        div.questions
+          //- prevent problems with undefined questions
+          if questions
+            - for (var i = 0; i <= questions.length - 2; i++)
+              - var question = questions[i]
+              - 
+                var isCorrectClass 
+                  = question.answerCorrect === question.answerGiven 
+                  ? "correct" : "incorrect"
+              div(class='question ' + isCorrectClass)
+                span.asktime= question.askTime
+                span.number= i + 1
+                span.lhs= question.number1
+                span.rhs= question.number2
+                span.answerGiven= question.answerGiven
+                span.answerCorrect= question.answerCorrect
+            //- last question
+            - var question = questions[questions.length - 1]
+            div.question.last-question
+              span.asktime= question.askTime
+              span.number= i + 1
+              span.lhs= question.number1
+              span.rhs= question.number2
+              block
+          else
+            span.noquestions No questions found

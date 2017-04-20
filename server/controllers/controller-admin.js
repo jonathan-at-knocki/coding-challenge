@@ -166,13 +166,10 @@ exports.main = function main(req, res, next) {
   validateAndCall(req, res, (user, errArr) => {
     quizModel.find().exec((err, quizzes) => {
       common.addToErrArr(err, 'all quizzes', errArr);
-      console.log(quizzes);
-      console.log('OK:' + quizzes.map(quiz => quiz.isOk()));
       res.render('view-admin-main', {
         user,
         quizzes: quizzes.sort(quizSortFcn),
-        errArr,
-        console
+        errArr
       });
     });
   });
@@ -183,7 +180,7 @@ exports.quiz = function quiz(req, res, next) {
   validateAndCall(req, res, (user, errArr) => {
     common.findByIdAndMore(
       quizModel, req.params.quizId, 'quiz', errArr, (quiz) => {
-        res.render('view-admin-quiz', { user, quiz, errArr, console });
+        res.render('view-admin-quiz', { user, quiz, errArr });
       });
   });
 };
