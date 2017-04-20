@@ -52,7 +52,7 @@ mixin showQuiz
           - var question = questions[i]
           - 
             var isCorrectClass 
-              = question.answerCorrect == question.answerGiven 
+              = question.answerCorrect === question.answerGiven 
               ? "correct" : "incorrect"
           div(class='question ' + isCorrectClass)
             span.asktime= question.askTime
