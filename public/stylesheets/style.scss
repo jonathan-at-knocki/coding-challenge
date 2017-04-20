@@ -27,13 +27,18 @@ body {
 }
 
 // questions table formatting
-table.questions {
+.questions {
     td, th {
         padding: 0.3em;
+    }
+
+    .question > * {
+        display: inline;
     }
     
     .ques-num {
         text-align: right;
+        margin-right: 0.3em;
     }
     .numbers {
         padding-right: 0;
@@ -88,8 +93,8 @@ table.questions {
 // for a standard quiz
 body.quiz {
     // question table
-    table.questions {
-        tr.header {
+    .questions {
+        .question.header {
             display: none;
         }
         .asktime {

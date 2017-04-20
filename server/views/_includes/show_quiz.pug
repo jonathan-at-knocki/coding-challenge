@@ -21,13 +21,13 @@ mixin showQuiz
       - var questions = quiz.questions
       //- prevent problems with undefined questions
       if questions
-        table.questions
+        .questions
           //- header
-          tr.header
-            th.ques-num #
-            th.asktime time asked
-            th.numbers problem
-            th.answer
+          .question.header
+            .ques-num #
+            .asktime time asked
+            .numbers problem
+            .answer
               span.answerGiven given 
               span.answerCorrect correct
           - for (var i = 0; i <= questions.length - 2; i++)
@@ -36,26 +36,26 @@ mixin showQuiz
               var isCorrectClass 
                 = question.answerCorrect === question.answerGiven 
                 ? "correct" : "incorrect"
-            tr(class='question ' + isCorrectClass)
-              td.ques-num
+            div(class='question ' + isCorrectClass)
+              .ques-num
                 span= i + 1
-              td.asktime= common.printDate(question.askTime)
-              td.numbers
+              .asktime= common.printDate(question.askTime)
+              .numbers
                 span.lhs= question.number1
                 span.rhs= question.number2
-              td.answer
+              .answer
                 span.answerGiven= question.answerGiven
                 span.answerCorrect= question.answerCorrect
           //- last question
           - var question = questions[questions.length - 1]
-          tr.question.last-question
-            td.ques-num
+          .question.last-question
+            .ques-num
               span= i + 1
-            td.asktime= common.printDate(question.askTime)
-            td.numbers
+            .asktime= common.printDate(question.askTime)
+            .numbers
               span.lhs= question.number1
               span.rhs= question.number2
-            td.answer
+            .answer
               block
       else
         div.quiz-noquestions No questions found

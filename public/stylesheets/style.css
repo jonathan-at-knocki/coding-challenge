@@ -3,46 +3,52 @@ body {
   padding-top: 50px;
   font-size: 16px; }
 
-table.questions td, table.questions th {
+.questions td, .questions th {
   padding: 0.3em; }
 
-table.questions .numbers {
+.questions .question > * {
+  display: inline; }
+
+.questions .ques-num {
+  text-align: right; }
+
+.questions .numbers {
   padding-right: 0; }
 
-table.questions .answer {
+.questions .answer {
   padding-left: 0; }
 
-table.questions .ques-num {
+.questions .ques-num {
   font-weight: bold; }
-  table.questions .ques-num span::after {
+  .questions .ques-num span::after {
     content: '.'; }
 
-table.questions .numbers {
+.questions .numbers {
   text-align: right; }
-  table.questions .numbers .rhs::before {
+  .questions .numbers .rhs::before {
     margin: 0 0.2em;
     content: "\00d7"; }
-  table.questions .numbers .rhs::after {
+  .questions .numbers .rhs::after {
     content: "=";
     margin: 0 0.2em; }
 
-table.questions .answerGiven {
+.questions .answerGiven {
   font-weight: bold; }
 
-table.questions .answerCorrect {
+.questions .answerCorrect {
   color: #39CCCC; }
 
-table.questions .incorrect .answer .answerGiven {
+.questions .incorrect .answer .answerGiven {
   text-decoration: line-through #FF4136;
   margin-right: 0.3em; }
 
-table.questions .correct .answer .answerCorrect {
+.questions .correct .answer .answerCorrect {
   display: none; }
 
-body.quiz table.questions tr.header {
+body.quiz .questions .question.header {
   display: none; }
 
-body.quiz table.questions .asktime {
+body.quiz .questions .asktime {
   display: none; }
 
 body.quiz form input {
