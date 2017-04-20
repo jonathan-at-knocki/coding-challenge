@@ -4,8 +4,8 @@ extends view-admin-base
 
 include _includes/quiz_functions
 
-block variablesAdmin
-  - var title = 'Quiz for ' + quiz.ip;
+append variables
+  - var title = 'Quiz for ' + quiz.startIp;
   - bodyClass += " admin-quiz";
 
 block content

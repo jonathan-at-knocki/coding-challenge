@@ -140,7 +140,7 @@ exports.main = function main(req, res, next) {
   validateAndCall(req, res, (user, errArr) => {
     quizModel.find().exec((err, quizzes) => {
       common.addToErrArr(err, 'all quizzes', errArr);
-      res.render('view-admin-main', { user, quizzes, errArr });
+      res.render('view-admin-main', { user, quizzes, errArr, console });
     });
   });
 };
@@ -150,7 +150,7 @@ exports.quiz = function quiz(req, res, next) {
   validateAndCall(req, res, (user, errArr) => {
     common.findByIdAndMore(
       quizModel, req.params.quizId, 'quiz', errArr, (quiz) => {
-        res.render('view-quiz', { user, quiz, errArr });
+        res.render('view-admin-quiz', { user, quiz, errArr, console });
       });
   });
 };
@@ -188,7 +188,9 @@ exports.registerAdd = function registerAdd(req, res) {
 
     userModel.createUser(
       req.body.email, req.body.password,
-      err => reshow(err.toString()),
-      user => reshow(null, 'Successfully added ' + user.email));
+      err => registerShowReal(
+        req, res, null, email, [err], null),
+      user => registerShowReal(
+        req, res, null, null, null, 'Successfully added ' + user.email));
   });
 };

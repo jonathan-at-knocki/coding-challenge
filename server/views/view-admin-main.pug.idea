@@ -1,0 +1,53 @@
+//- the initial/main view for the admin panel
+
+//- expects quizzes variable
+
+extends view-admin-base
+
+include _includes/quiz_functions
+
+block variablesAdmin
+  - var title = Quizzes
+  - bodyClass += " admin-main"
+
+block content
+  div.addUser
+    a(href="/admin/register") Add new admin user
+  h2 Current quizzes (#{quizzes.length} total)
+  table
+    tr.table-header
+      th.quiz-time start time
+      th.quiz-ip start IP
+      th.quiz-correct nr. correctly answered
+      th.quiz-answered nr. total answered
+      th.quiz-score score
+    for quiz in quizzes
+      - 
+        if (!(quiz.startTime && quiz.startIp
+        && quiz.questionsCorrect && quiz.questionsAnswered)) {
+        - console.log('abc')
+//-        tr(class='table-row ' + theGradeClass)
+//-          - 
+//-            var date = quiz.startTime
+//-            date = date.toLocaleDateString('en-US')
+//-              + ' ' + date.toLocaleTimeString('en-US', {hour12: false})
+//-          td.quiz-time= date
+//-          td.quiz-ip
+//-            a(href='/admin/quiz/' + quiz._id)= quiz.startIp
+//-          td.quiz-correct= quiz.questionsCorrect
+//-          td.quiz-answered= quiz.questionsAnswered
+//-          - 
+//-            var theGradePercentStr
+//-              = gradePercentStr(quiz.questionsAnswered, 
+//-                                quiz.questionsCorrect);
+//-          td.quiz-score= theGradePercentStr
+      - else
+        - console.log('def')
+        p 1
+        //- tr.table-row.bad-quiz
+        //-   td.quiz-time
+        //-   td.quiz-ip bad quiz
+        //-     span(display='none')= quiz._id
+        //-   td.quiz-correct
+        //-   td.quiz-answered
+        //-   td.quiz-score

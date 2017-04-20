@@ -1,5 +1,5 @@
 extends view-admin-submit_creds
 
-block variablesAdmin
+append variables
   - var actionLoc = '/admin/login' + (redirect ? '?redirect=' + redirect : '')
   - var submitText = 'Login'
