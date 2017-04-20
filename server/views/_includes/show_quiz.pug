@@ -24,11 +24,12 @@ mixin showQuiz
         table.questions
           //- header
           tr.header
-            th.number #
+            th.ques-num #
             th.asktime time asked
             th.numbers problem
-            th.answerGiven given 
-            th.answerCorrect correct
+            th.answer
+              span.answerGiven given 
+              span.answerCorrect correct
           - for (var i = 0; i <= questions.length - 2; i++)
             - var question = questions[i]
             - 
@@ -36,22 +37,26 @@ mixin showQuiz
                 = question.answerCorrect === question.answerGiven 
                 ? "correct" : "incorrect"
             tr(class='question ' + isCorrectClass)
-              td.number= i + 1
+              td.ques-num
+                span= i + 1
               td.asktime= common.printDate(question.askTime)
               td.numbers
                 span.lhs= question.number1
                 span.rhs= question.number2
-              td.answerGiven= question.answerGiven
-              td.answerCorrect= question.answerCorrect
+              td.answer
+                span.answerGiven= question.answerGiven
+                span.answerCorrect= question.answerCorrect
           //- last question
           - var question = questions[questions.length - 1]
           tr.question.last-question
-            td.number= i + 1
+            td.ques-num
+              span= i + 1
             td.asktime= common.printDate(question.askTime)
             td.numbers
               span.lhs= question.number1
               span.rhs= question.number2
-            
-            block
+            td.answer
+              block
       else
         div.quiz-noquestions No questions found
+        
