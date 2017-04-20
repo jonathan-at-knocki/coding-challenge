@@ -74,8 +74,7 @@ function answerInner(req, res, user, quiz, errArr) {
       quiz.answerQuestion(
         answer,
         req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-        err => render(err ? err.toString() : '')
-      );
+        res.redirect('/'));
     }
   }
 }
