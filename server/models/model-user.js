@@ -34,6 +34,7 @@ userSchema.statics.createUser = function createUser(
   if (!(email && password)) {
     callErrback('Cannot have blank e-mail or password');
   } else if (!validateEmail(email)) {
+    console.log('email: ' + email);
     callErrback('Bad email: ' + email);
   } else {
     // check for existing user
@@ -61,6 +62,13 @@ userSchema.statics.createUser = function createUser(
       }
     });
   }
+};
+
+userSchema.methods.validatePassword = function validatePassword(password) {
+  const hash =
+        crypto.pbkdf2Sync(password, this.salt, 100000, 512, 'sha512')
+        .toString('hex');
+  return this.hash === hash;
 };
 
 mongoose.model('User', userSchema);

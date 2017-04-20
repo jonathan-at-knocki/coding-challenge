@@ -75,8 +75,9 @@ exports.loginDo = function login(req, res) {
 
         // eslint-disable-next-line no-lonely-if
         if (user.validatePassword(password)) {
-          req.session.user = user;
-          res.redirect('/admin');
+          req.session.userId = user._id;
+          res.redirect(req.query.redirect
+                       ? decodeURI(req.query.redirect) : '/admin');
         } else {
           reshow('Incorrect password');
         }
