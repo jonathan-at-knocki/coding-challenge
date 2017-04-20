@@ -83,4 +83,11 @@ quizSchema.methods.answerQuestion = function answerQuestion(
   this.save(callback);
 };
 
+//  does a quiz have the proper structure to be shown?
+quizSchema.methods.isOk = function isOk() {
+  return (this && this.startIp && this.startTime instanceof Date
+          && (typeof this.questionsCorrect === 'number')
+          && (typeof this.questionsAnswered === 'number'));
+};
+
 mongoose.model('Quiz', quizSchema);

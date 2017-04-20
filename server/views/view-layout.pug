@@ -17,7 +17,8 @@ html
           a.link-admin-main(href="/admin")= user.email
           a.link-logout(href="/admin/logout?redirect=/admin/login") logout
         else
-          a(href="/admin/login") login
+          if (!isLogin)
+            a(href="/admin/login") login
     h1= title
     //- generate errMsg from errArr
     -

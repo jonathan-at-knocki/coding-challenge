@@ -23,7 +23,7 @@ block content
       th.quiz-score score
     for quiz in quizzes
       //- need to separate out cond because of parsing issues
-      if (isQuizOk(quiz))
+      if (quiz.isOk())
         - 
           var theGradeClass 
             = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);

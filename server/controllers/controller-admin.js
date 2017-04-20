@@ -44,7 +44,8 @@ function loginShowReal(req, res, next, email, errArr) {
       title: 'Login user',
       email,
       errArr,
-      redirect: req.query.redirect
+      redirect: req.query.redirect,
+      isLogin: true
     });
   }
 
@@ -135,49 +136,26 @@ function validateAndCall(req, res, callback) {
 //   THE ADMIN PAGES
 */
 
-//  does a quiz have the proper structure to be shown?
-function isQuizOk(quiz) {
-  return (quiz && quiz.startTime && quiz.startIp
-          && quiz.questionsCorrect && quiz.questionsAnswered);
-}
-
-//  does a quiz have the proper structure to be shown?
-function isQuizOkRight(quiz) {
-  return (quiz && quiz.startIp && quiz.startTime instanceof Date
-          && (typeof quiz.questionsCorrect === 'number')
-          && (typeof quiz.questionsAnswered === 'number'));
-}
-
 //  sort two quizzes
 function quizSortFcn(quiz1, quiz2) {
-  // we make a bitmask. lower sorts first. a mask of 0 means that quiz has
-  // proper date
-  const getSortMask
-        = quiz =>
-        ((isQuizOk(quiz) ? 0 : 2) + (quiz.startTime instanceof Date ? 0 : 1));
+  const ok1 = quiz1.isOk();
+  const ok2 = quiz2.isOk();
 
-  const time1 = quiz1.startTime;
-  const time2 = quiz2.startTime;
-  const mask1 = getSortMask(time1);
-  const mask2 = getSortMask(time2);
-
-  // if one of mask1 or mask2 are not zero, one of quiz1, quiz2 is not a
-  // date
   /* eslint-disable no-else-return, no-lonely-if */
-  if (mask1 === 0) {
-    if (mask2 === 0) {
-      // both mask1 and mask2 are dates
+  if (ok1) {
+    if (ok2) {
+      // both quiz1, quiz2 are ok
       return quiz1.startTime - quiz2.startTime;
     } else {
       // quiz1 is OK but not quiz2
       return -1;
     }
   } else {
-    if (mask2 === 0) {
+    if (ok2) {
       // quiz2 is OK but not quiz1
       return 1;
     } else {
-      return mask1 - mask2;
+      return 0;
     }
   }
   /* eslint-enable no-else-return, no-lonely-if */
@@ -189,13 +167,12 @@ exports.main = function main(req, res, next) {
     quizModel.find().exec((err, quizzes) => {
       common.addToErrArr(err, 'all quizzes', errArr);
       console.log(quizzes);
-      console.log('OK:' + quizzes.map(quiz => isQuizOk(quiz)));
+      console.log('OK:' + quizzes.map(quiz => quiz.isOk()));
       res.render('view-admin-main', {
         user,
         quizzes: quizzes.sort(quizSortFcn),
         errArr,
-        console,
-        isQuizOk
+        console
       });
     });
   });

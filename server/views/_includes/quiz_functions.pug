@@ -8,8 +8,10 @@ append variables
   //- answered no questions
   - 
     function gradePercentStr(questionsAnswered, questionsCorrect) {
-      if (!(questionsAnswered && (questionsCorrect === 0 || questionsCorrect))
-          || isNaN(questionsCorrect / questionsAnswered)) return "";
+      if (!(typeof questionsCorrect === 'number'
+            && typeof questionsAnswered === 'number')
+          || questionsAnswered === 0
+          || isNaN(questionsCorrect / questionsAnswered)) return "n/a";
       else 
         return Math.round(questionsCorrect / questionsAnswered * 100) + '%';
     }  
@@ -28,7 +30,8 @@ append variables
         else return "grade-perfect";
       }  
     }
-//- show a quiz, including beginning with current grade
+
+//- show a quiz, including showing the current grade
 //- should be passed a block to deal with the differences in how the last
 //- question is treated in the admin screen vs. the quiz screen
 //- (since the last question has not been answered yet, it should be
