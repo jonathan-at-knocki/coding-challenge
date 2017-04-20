@@ -23,21 +23,32 @@ block content
       th.quiz-score score
     for quiz in quizzes
       - 
-        theGradeClass 
-          = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
-      tr(class='table-row ' + theGradeClass)
+        if (!(quiz.startTime && quiz.startIp
+              && quiz.questionsCorrect && quiz.questionsAnswered))
         - 
-          var date = quiz.startTime
-          date = date.toLocaleDateString('en-US')
-            + ' ' + date.toLocaleTimeString('en-US', {hour12: false})
-        span.date= date
-        td.quiz-time= date
-        td.quiz-ip
-          a(href='/admin/quiz/' + quiz._id)= quiz.startIp
-        td.quiz-correct= quiz.questionsCorrect
-        td.quiz-answered= quiz.questionsAnswered
-        - 
-          var theGradePercentStr
-            = gradePercentStr(quiz.questionsAnswered, quiz.questionsCorrect);
-        td.quiz-score= theGradePercentStr
-
+          theGradeClass 
+            = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
+        tr(class='table-row ' + theGradeClass)
+          - 
+            var date = quiz.startTime
+            date = date.toLocaleDateString('en-US')
+              + ' ' + date.toLocaleTimeString('en-US', {hour12: false})
+          td.quiz-time= date
+          td.quiz-ip
+            a(href='/admin/quiz/' + quiz._id)= quiz.startIp
+          td.quiz-correct= quiz.questionsCorrect
+          td.quiz-answered= quiz.questionsAnswered
+          - 
+            var theGradePercentStr
+              = gradePercentStr(quiz.questionsAnswered, 
+                                quiz.questionsCorrect);
+          td.quiz-score= theGradePercentStr
+      - else
+        tr.table-row.bad-quiz
+          td.quiz-time
+          td.quiz-ip bad quiz
+            span(display='none')= quiz._id
+          td.quiz-correct
+          td.quiz-answered
+          td.quiz-score
+        
