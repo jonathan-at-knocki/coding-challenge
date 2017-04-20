@@ -33,7 +33,9 @@ exports.restart = function restart(req, res) {
 
 //  function to show the quiz page
 function showInner(req, res, user, quiz, errArr) {
-  if (!quiz) {
+  if (quiz) {
+    res.render('view-quiz', { user, quiz, errArr });
+  } else {
     // no quiz started. start a new one
 
     // we use nginx, so we need x-forwarded-for
@@ -48,8 +50,6 @@ function showInner(req, res, user, quiz, errArr) {
         }
         res.render('view-quiz', { user, quiz, errArr });
       });
-  } else {
-    res.render('view-quiz', { user, quiz, errArr });
   }
 }
 

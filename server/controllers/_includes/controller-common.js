@@ -1,6 +1,9 @@
 //  some common helpers functions
 const mongoose = require('mongoose');
 
+const userModel = mongoose.model('User');
+const quizModel = mongoose.model('Quiz');
+
 //  add error string errArr as appropriate, with error prefixed by
 //  appropriate string using itemName
 exports.addToErrArr = function addToErrArr(err, itemName, errArr) {
@@ -26,7 +29,7 @@ exports.findByIdAndMore = function findByIdAndMore(
   } else {
     itemModel.findById(itemId).exec((err, item) => {
       addToErrArr(err, itemName, errArr);
-      callback(errArr, item);
+      callback(item, errArr);
     });
   }
 };
