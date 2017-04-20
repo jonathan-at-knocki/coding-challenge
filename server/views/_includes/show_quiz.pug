@@ -9,54 +9,57 @@ mixin showQuiz
       - 
         var theGradeClass 
           = common.gradeClass(
-            quiz.questionsCorrect, quiz.questionsAnswered);
+            quiz.questionsAnswered, quiz.questionsCorrect);
       div(class='grade ' + theGradeClass)
-        span.questionsCorrect= quiz.questionsCorrect
-        span.questionsAnswered= quiz.questionsAnswered
+        span.questions-correct= quiz.questionsCorrect
+        span.questions-answered= quiz.questionsAnswered
         - 
           var theGradePercentStr
             = common.gradePercentStr(
               quiz.questionsAnswered, quiz.questionsCorrect);
-        span.gradePercent= theGradePercentStr
+        span.grade-percent= theGradePercentStr
       - var questions = quiz.questions
       //- prevent problems with undefined questions
       if questions
-        .questions
-          //- header
-          .question.header
-            .ques-num #
-            .asktime time asked
-            .numbers problem
-            .answer
-              span.answerGiven given 
-              span.answerCorrect correct
-          - for (var i = 0; i <= questions.length - 2; i++)
-            - var question = questions[i]
-            - 
-              var isCorrectClass 
-                = question.answerCorrect === question.answerGiven 
-                ? "correct" : "incorrect"
-            div(class='question ' + isCorrectClass)
-              .ques-num
+        table.questions.table
+          thead
+            //- header
+            tr.header
+              th.ques-num
+                span
+              th.asktime time asked
+              th.numbers problem
+              th.answer
+                span.answer-given given 
+                span.answer-correct correct
+          tbody
+            - for (var i = 0; i <= questions.length - 2; i++)
+              - var question = questions[i]
+              - 
+                var isCorrectClass 
+                  = question.answerCorrect === question.answerGiven 
+                  ? "correct" : "incorrect"
+              tr(class='question ' + isCorrectClass)
+                td.ques-num
+                  span= i + 1
+                td.asktime= common.printDate(question.askTime)
+                td.numbers
+                  span.lhs= question.number1
+                  span.rhs= question.number2
+                td.answer
+                  span.answer-given= question.answerGiven
+                  span.answer-correct= question.answerCorrect
+            //- last question
+            - var question = questions[questions.length - 1]
+            tr.question.last-question
+              td.ques-num
                 span= i + 1
-              .asktime= common.printDate(question.askTime)
-              .numbers
+              td.asktime= common.printDate(question.askTime)
+              td.numbers
                 span.lhs= question.number1
                 span.rhs= question.number2
-              .answer
-                span.answerGiven= question.answerGiven
-                span.answerCorrect= question.answerCorrect
-          //- last question
-          - var question = questions[questions.length - 1]
-          .question.last-question
-            .ques-num
-              span= i + 1
-            .asktime= common.printDate(question.askTime)
-            .numbers
-              span.lhs= question.number1
-              span.rhs= question.number2
-            .answer
-              block
+              td.answer
+                block
       else
         div.quiz-noquestions No questions found
         

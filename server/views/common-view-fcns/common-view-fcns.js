@@ -20,7 +20,8 @@ exports.gradeClass = function gradeClass(
     return 'grade-newquiz';
   } else {
     grade = questionsCorrect / questionsAnswered;
-    if (grade < 0.7) return 'grade-f';
+    if (grade < 0.6) return 'grade-f';
+    if (grade < 0.7) return 'grade-d';
     else if (grade < 0.8) return 'grade-c';
     else if (grade < 0.9) return 'grade-b';
     else if (grade < 1) return 'grade-a';

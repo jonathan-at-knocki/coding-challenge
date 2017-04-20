@@ -3,49 +3,70 @@ body {
   padding-top: 50px;
   font-size: 16px; }
 
-.questions td, .questions th {
-  padding: 0.3em; }
+.restart {
+  margin-after: 0.6em; }
 
-.questions .question > * {
-  display: inline; }
+.grade {
+  font-size: 1.2em;
+  font-weight: 500; }
 
-.questions .ques-num {
-  text-align: right; }
+.grade-perfect .grade-percent, .grade-a .grade-percent {
+  color: #2ECC40; }
 
-.questions .numbers {
-  padding-right: 0; }
+.grade-b .grade-percent {
+  color: #FF851B; }
 
-.questions .answer {
-  padding-left: 0; }
+.grade-c .grade-percent {
+  color: #FFDC00; }
 
-.questions .ques-num {
-  font-weight: bold; }
-  .questions .ques-num span::after {
-    content: '.'; }
+.grade-d .grade-percent {
+  color: #F012BE; }
 
-.questions .numbers {
-  text-align: right; }
-  .questions .numbers .rhs::before {
-    margin: 0 0.2em;
-    content: "\00d7"; }
-  .questions .numbers .rhs::after {
-    content: "=";
-    margin: 0 0.2em; }
+.grade-f .grade-percent {
+  color: #FF4136; }
 
-.questions .answerGiven {
-  font-weight: bold; }
+.grade .questions-correct::after {
+  content: "\00a0 correct \00a0 / \00a0"; }
 
-.questions .answerCorrect {
-  color: #39CCCC; }
+.grade .questions-answered::after {
+  content: "\00a0 answered \00a0 = \00a0"; }
 
-.questions .incorrect .answer .answerGiven {
-  text-decoration: line-through #FF4136;
-  margin-right: 0.3em; }
+.questions {
+  width: auto; }
+  .questions .header .ques-num span::after {
+    content: "#\00a0"; }
+  .questions td, .questions th {
+    padding: 0.3em; }
+  .questions .ques-num {
+    text-align: right;
+    padding-right: 0.3em; }
+  .questions .numbers {
+    padding-right: 0; }
+  .questions .answer {
+    padding-left: 0; }
+  .questions .ques-num {
+    font-weight: bold; }
+    .questions .ques-num span::after {
+      content: '.'; }
+  .questions .numbers {
+    text-align: right; }
+    .questions .numbers .rhs::before {
+      margin: 0 0.2em;
+      content: "\00d7"; }
+    .questions .numbers .rhs::after {
+      content: "=";
+      margin: 0 0.2em; }
+  .questions .answer-given {
+    font-weight: bold; }
+  .questions .answer-correct {
+    color: #39CCCC; }
+  .questions .incorrect .answer .answer-given {
+    text-decoration: line-through #FF4136;
+    margin-right: 0.3em; }
+  .questions .correct .answer .answer-correct {
+    display: none; }
 
-.questions .correct .answer .answerCorrect {
-  display: none; }
-
-body.quiz .questions .question.header {
+body.quiz .questions .header {
   display: none; }
 
 body.quiz .questions .asktime {

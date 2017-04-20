@@ -26,19 +26,66 @@ body {
   font-size: 16px;
 }
 
+.restart {
+    margin-bottom: 0.6em;
+}
+
+.grade {
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-bottom: 0.5em;
+}
+// grade coloring
+.grade-percent {
+    .grade-perfect &, .grade-a & {
+        color: $green;
+    }
+    .grade-b & {
+        color: $orange;
+    }
+    .grade-c & {
+        color: $yellow;
+    }
+    .grade-d & {
+        color: $fuchsia;
+    }
+    .grade-f & {
+        color: $red;
+    }        
+
+}
+
+// quiz pre-question text
+.grade {
+    .questions-correct {
+        &::after {
+           content: "\00a0 correct \00a0 / \00a0"
+        }
+    }
+
+    .questions-answered {
+        &::after {
+           content: "\00a0 answered \00a0 = \00a0"
+        }
+    }
+}
+
 // questions table formatting
 .questions {
+    width: auto;
+    
+    .header .ques-num {
+        span::after {
+            content: "#\00a0"
+        }
+    }
     td, th {
         padding: 0.3em;
     }
 
-    .question > * {
-        display: inline;
-    }
-    
     .ques-num {
         text-align: right;
-        margin-right: 0.3em;
+        padding-right: 0.3em;
     }
     .numbers {
         padding-right: 0;
@@ -64,27 +111,31 @@ body {
         }
     }
 
-    .answerGiven {
+    .answer-given {
         font-weight: bold;
     }
 
-    .answerCorrect{
+    .answer-correct{
         color: $teal;
     }
 
     .incorrect {
         .answer {
-            .answerGiven {
+            .answer-given {
                 text-decoration: line-through $red;
                 margin-right: 0.3em;
             }
         }
     }
-    // formatting for 
+    // formatting for correct
     .correct {
         .answer {
-            .answerCorrect {
+            .answer-correct {
                 display: none;
+            }
+
+            .answer-given {
+                // color: $green;
             }
         }
     }
@@ -94,7 +145,7 @@ body {
 body.quiz {
     // question table
     .questions {
-        .question.header {
+        .header {
             display: none;
         }
         .asktime {
