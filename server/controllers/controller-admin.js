@@ -135,12 +135,43 @@ function validateAndCall(req, res, callback) {
 //   THE ADMIN PAGES
 */
 
+// sort two quizzes
+function quizSortFcn(quiz1, quiz2) {
+  function isTime(quiz) {
+    return (quiz && quiz.startTime && typeof quiz.startTime === 'object'
+            && Object.getPrototypeOf(quiz) === Date.prototype);
+  }
+  // bad quizzes last
+
+  /* eslint-disable no-else-return */
+  if (isTime(quiz1)) {
+    if (isTime(quiz2)) {
+      return quiz1 - quiz2;
+    } else {
+      // quiz2 is a bad quiz
+      return -1;
+    }
+  } else if (isTime(quiz2)) {
+    // quiz1 is a bad quiz1
+    return 1;
+  } else {
+    return 0;
+  }
+  /* eslint-enable no-else-return */
+}
+
 //  the main admin screen
 exports.main = function main(req, res, next) {
   validateAndCall(req, res, (user, errArr) => {
     quizModel.find().exec((err, quizzes) => {
       common.addToErrArr(err, 'all quizzes', errArr);
-      res.render('view-admin-main', { user, quizzes, errArr, console });
+      console.log(quizzes.sort(quizSortFcn));
+      res.render('view-admin-main', {
+        user,
+        quizzes: quizzes.sort(quizSortFcn),
+        errArr,
+        console
+      });
     });
   });
 };
