@@ -8,18 +8,19 @@ block quizFunctionsHook
   //- answered no questions
   - 
     function gradePercentStr(questionsAnswered, questionsCorrect) {
-      if (!questionsAnswered || !questionsCorrect
+      if (!(questionsAnswered && questionsCorrect)
           || isNaN(questionsCorrect / questionsAnswered)) return "";
-      else return Math.round(questionsCorrect / questionsAnswered).toString();
+      else return 
+        Math.round(questionsCorrect / questionsAnswered * 100) + '%';
     }  
   -
     // get the grade class for questions answered, questions correct
     function gradeClass(questionsAnswered, questionsCorrect) {
       var gradeClass, grade;
-      if (quiz.questionsAnswered === 0) {
+      if (questionsAnswered === 0) {
         return "grade-newquiz";
       } else {
-        grade = quiz.questionsCorrect / quiz.questionsAnswered;
+        grade = questionsCorrect / questionsAnswered;
         if (grade < .7) return "grade-f";
         else if (grade < .8) return "grade-c";
         else if (grade < .9) return "grade-b";

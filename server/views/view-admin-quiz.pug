@@ -2,9 +2,11 @@
 
 extends view-admin-base
 
+include _includes/quiz_functions
+
 block variablesAdmin
-  - var title = Quiz for #{quiz.ip}
-  - bodyClass += " admin-quiz"
+  - var title = 'Quiz for ' + quiz.ip;
+  - bodyClass += " admin-quiz";
 
 block content
   a.link-admin-main(href="/admin") Back

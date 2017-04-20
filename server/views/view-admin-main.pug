@@ -22,11 +22,14 @@ block content
       th.quiz-answered nr. total answered
       th.quiz-score score
     for quiz in quizzes
+      //- need to separate out cond because of parsing issues
       - 
-        if (!(quiz.startTime && quiz.startIp
-              && quiz.questionsCorrect && quiz.questionsAnswered))
+        var quizOk 
+          = quiz && quiz.startTime && quiz.startIp 
+            && quiz.questionsCorrect && quiz.questionsAnswered;
+      if (quizOk)
         - 
-          theGradeClass 
+          var theGradeClass 
             = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
         tr(class='table-row ' + theGradeClass)
           - 
@@ -43,11 +46,11 @@ block content
               = gradePercentStr(quiz.questionsAnswered, 
                                 quiz.questionsCorrect);
           td.quiz-score= theGradePercentStr
-      - else
+      else
         tr.table-row.bad-quiz
           td.quiz-time
           td.quiz-ip bad quiz
-            span(display='none')= quiz._id
+            span(style="display: none;")= quiz ? quiz._id : 'no id'
           td.quiz-correct
           td.quiz-answered
           td.quiz-score
