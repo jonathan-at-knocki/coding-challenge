@@ -1,9 +1,28 @@
 body {
   min-height: 2000px;
   padding-top: 50px;
+  font-size: 16px;
+}
+
+// questions table formatting
+table.questions {
+    td, th {
+        padding: 0.3em;
+    }
+    .numbers {
+        text-align: right;
+        .rhs::before {
+            content: "\00d7";
+        }
+    }
 }
 
 // for a standard quiz
 body.quiz {
-    
+    // question table
+    table.questions {
+        .asktime {
+            display: none;
+        }
+    }
 }

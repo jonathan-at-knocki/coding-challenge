@@ -1,5 +1,17 @@
 body {
   min-height: 2000px;
-  padding-top: 50px; }
+  padding-top: 50px;
+  font-size: 16px; }
+
+table.questions td {
+  margin: 0.3em; }
+
+table.questions .numbers {
+  text-align: right; }
+  table.questions .numbers .rhs::before {
+    content: "\00d7"; }
+
+body.quiz table.questions .asktime {
+  display: none; }
 
 /*# sourceMappingURL=style.css.map */

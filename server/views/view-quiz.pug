@@ -9,7 +9,8 @@ append variables
   - var title = "Multiplication quiz"
 
 block content
-  a.restart(href="/restart") Restart quiz
+  .container
+    a.restart(href="/restart") Restart quiz
   +showQuiz
     //- block for last question
     form.answer(action="/", method="post")

@@ -21,27 +21,37 @@ mixin showQuiz
       - var questions = quiz.questions
       //- prevent problems with undefined questions
       if questions
-        ol.questions
+        table.questions
+          //- header
+          tr.header
+            th.number #
+            th.asktime time asked
+            th.numbers problem
+            th.answerGiven given 
+            th.answerCorrect correct
           - for (var i = 0; i <= questions.length - 2; i++)
             - var question = questions[i]
             - 
               var isCorrectClass 
                 = question.answerCorrect === question.answerGiven 
                 ? "correct" : "incorrect"
-            li(class='question ' + isCorrectClass)
-              span.number= i + 1
-              span.asktime= common.printDate(question.askTime)
-              span.lhs= question.number1
-              span.rhs= question.number2
-              span.answerGiven= question.answerGiven
-              span.answerCorrect= question.answerCorrect
+            tr(class='question ' + isCorrectClass)
+              td.number= i + 1
+              td.asktime= common.printDate(question.askTime)
+              td.numbers
+                span.lhs= question.number1
+                span.rhs= question.number2
+              td.answerGiven= question.answerGiven
+              td.answerCorrect= question.answerCorrect
           //- last question
           - var question = questions[questions.length - 1]
-          li.question.last-question
-            span.number= i + 1
-            span.asktime= common.printDate(question.askTime)
-            span.lhs= question.number1
-            span.rhs= question.number2
+          tr.question.last-question
+            td.number= i + 1
+            td.asktime= common.printDate(question.askTime)
+            td.numbers
+              span.lhs= question.number1
+              span.rhs= question.number2
+            
             block
       else
         div.quiz-noquestions No questions found
