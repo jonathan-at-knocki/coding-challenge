@@ -26,12 +26,12 @@ block content
       tr(class='table-row ' + theGradeClass)
         - 
           var date = quiz.startTime
-          date = date.toLocaleDateString("en-US")
-            + ' ' + date.toLocaleTimeString("en-US", {hour12: false})
+          date = date.toLocaleDateString('en-US')
+            + ' ' + date.toLocaleTimeString('en-US', {hour12: false})
         span.date= date
         td.quiz-time= date
         td.quiz-ip
-          a(href="/admin/")= quiz.startIp
+          a(href='/admin/quiz/' + quiz._id)= quiz.startIp
         td.quiz-correct= quiz.questionsCorrect
         td.quiz-answered= quiz.questionsAnswered
         - 
