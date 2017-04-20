@@ -3,22 +3,46 @@ doctype html
 block variables
 html
   head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    
     title= title
-    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
   //- option to include classes in body
-  
   body(class=bodyClass)
-    header
-      div.main-link
-        a(href="/") Quizical
-      div.links-bar.links-admin
-        if user
-          a.link-admin-main(href="/admin")= user.email
-          a.link-logout(href="/admin/logout?redirect=/admin/login") logout
-        else
-          if (!isLogin)
-            a(href="/admin/login") login
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      .container
+        .navbar-header
+          button(type="button", class="navbar-toggle collapsed", 
+            data-toggle="collapse", data-target="#navbar", 
+            aria-expanded="false", aria-controls="navbar")
+              span#sr-only Toggle navigation
+              span#icon-bar
+              span#icon-bar
+              span#icon-bar
+          a.navbar-brand(href='/') Quizical
+        #navbar.navbar-collapse.collapse
+          ul.nav.navbar-nav
+          ul.nav.navbar-nav.navbar-right
+            if user
+              li
+                a.link-admin-main(href='/admin')= user.email
+              li
+                a.link-logout(href='/admin/logout?redirect=' + req.url) logout
+            else
+              if (!isLogin)
+                li
+                  a(href="/admin/login") login
+
     h1= title
     //- generate errMsg from errArr
     -
