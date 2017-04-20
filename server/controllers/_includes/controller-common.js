@@ -25,7 +25,7 @@ const addToErrArr = exports.addToErrArr;
 exports.findByIdAndMore = function findByIdAndMore(
   itemModel, itemId, itemName, errArr, callback) {
   if (!itemId) {
-    callback(errArr, null);
+    callback(null, errArr);
   } else {
     itemModel.findById(itemId).exec((err, item) => {
       addToErrArr(err, itemName, errArr);
