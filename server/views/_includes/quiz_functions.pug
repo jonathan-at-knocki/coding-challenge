@@ -8,10 +8,10 @@ append variables
   //- answered no questions
   - 
     function gradePercentStr(questionsAnswered, questionsCorrect) {
-      if (!(questionsAnswered && questionsCorrect)
+      if (!(questionsAnswered && (questionsCorrect === 0 || questionsCorrect))
           || isNaN(questionsCorrect / questionsAnswered)) return "";
-      else return 
-        Math.round(questionsCorrect / questionsAnswered * 100) + '%';
+      else 
+        return Math.round(questionsCorrect / questionsAnswered * 100) + '%';
     }  
   -
     // get the grade class for questions answered, questions correct
@@ -43,7 +43,7 @@ mixin showQuiz
       span.questionsAnswered= quiz.questionsAnswered
       - 
         var theGradePercentStr
-          = gradePercentStr(quiz.questionsCorrect, quiz.questionsAnswered);
+          = gradePercentStr(quiz.questionsAnswered, quiz.questionsCorrect);
       span.gradePercent= theGradePercentStr
     - var questions = quiz.questions
     div.questions
