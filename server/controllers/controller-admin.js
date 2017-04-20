@@ -165,12 +165,14 @@ exports.registerShow = (req, res, next) => registerShowReal(req, res, next);
 //  registration screen
 //  email, errArr are for showing an error message and prepopulating the
 //  email box
-function registerShowReal(req, res, next, email, errArr) {
+//  msg is just a random message
+function registerShowReal(req, res, next, email, errArr, msg) {
   validateAndCall(req, res, (user, errArr) => {
     res.render('view-admin-register', {
       user,
       email,
-      errArr
+      errArr,
+      msg
     });
   });
 }
@@ -180,39 +182,12 @@ exports.registerAdd = function registerAdd(req, res) {
     const email = req.body.email;
     const password = req.body.password;
     const reshow
-          = msg => registerShowReal(req, res, null, email, msg ? [msg] : []);
+          = (errMsg, msg) => registerShowReal(
+            req, res, null, email, errMsg ? [errMsg] : [], msg);
 
-    // attempt to add user
-    if (!(email && password)) {
-      reshow('Both email and password must be non-blank');
-      return;
-    }
-
-    // first check for existing user
-    userModel.findOne({ email }, (err, user) => {
-      if (err) {
-        reshow('Error searching for email: ' + err);
-      } else if (!user) {
-        // user not found. add him
-        userModel.create({ email }, (err, user) => {
-          if (err) {
-            reshow('Error adding user: ' + err);
-            return;
-          }
-          user.setPassword(password);
-          user.save((err) => {
-            if (err) {
-              reshow('Error saving user password: ' + err);
-              return;
-            }
-            // all good
-            reshow();
-          });
-        });
-      } else {
-        // email exists already
-        reshow('Email already exists in db');
-      }
-    });
+    userModel.createUser(
+      req.body.email, req.body.password,
+      err => reshow(err.toString()),
+      user => reshow(null, 'Successfully added ' + user.email));
   });
 };
