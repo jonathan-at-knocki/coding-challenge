@@ -28,10 +28,14 @@ function redirectIfLoggedIn(req, res, callback) {
   }
 }
 
+//  we have to use loginShowReal because express doesn't like callbacks
+//  with the wrong signature
+exports.loginShow = (req, res, next) => loginShowReal(req, res, next);
+
 //  login screen
 //  email, errArr are for showing an error message and prepopulating the
 //  email box when a faulty login is tried
-exports.loginShow = function loginShow(req, res, next, email, errArr) {
+function loginShowReal(req, res, next, email, errArr) {
   // initialize errArr;
   if (!errArr) errArr = [];
 
@@ -45,7 +49,7 @@ exports.loginShow = function loginShow(req, res, next, email, errArr) {
   }
 
   redirectIfLoggedIn(req, res, render);
-};
+}
 
 
 // act on a login request
@@ -54,7 +58,8 @@ exports.loginDo = function login(req, res) {
     const email = req.body.email;
     const password = req.body.password;
     const reshow
-          = msg => exports.loginShow(req, res, null, email, msg ? [msg] : []);
+          = msg => exports.loginShowReal(
+            req, res, null, email, msg ? [msg] : []);
 
     if (!(email && password)) {
       reshow('Both email and password must be nonblank');
@@ -155,10 +160,13 @@ exports.quiz = function quiz(req, res, next) {
 //   REGISTRATION
 */
 
+//  again, express is picky about callback signatures
+exports.registerShow = (req, res, next) => registerShowReal(req, res, next);
+
 //  registration screen
 //  email, errArr are for showing an error message and prepopulating the
 //  email box
-exports.registerShow = function registerShow(req, res, next, email, errArr) {
+function registerShowReal(req, res, next, email, errArr) {
   validateAndCall(req, res, (user, errArr) => {
     res.render('view-admin-register', {
       user,
@@ -166,15 +174,14 @@ exports.registerShow = function registerShow(req, res, next, email, errArr) {
       errArr
     });
   });
-};
-const registerShow = exports.registerShow;
+}
 
-exports.registerAdd = function register(req, res) {
+exports.registerAdd = function registerAdd(req, res) {
   validateAndCall(req, res, (user, errArr) => {
     const email = req.body.email;
     const password = req.body.password;
     const reshow
-          = msg => registerShow(req, res, null, email, msg ? [msg] : []);
+          = msg => registerShowReal(req, res, null, email, msg ? [msg] : []);
 
     // attempt to add user
     if (!(email && password)) {
