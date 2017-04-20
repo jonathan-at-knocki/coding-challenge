@@ -135,29 +135,52 @@ function validateAndCall(req, res, callback) {
 //   THE ADMIN PAGES
 */
 
-// sort two quizzes
-function quizSortFcn(quiz1, quiz2) {
-  function isTime(quiz) {
-    return (quiz && quiz.startTime && typeof quiz.startTime === 'object'
-            && Object.getPrototypeOf(quiz) === Date.prototype);
-  }
-  // bad quizzes last
+//  does a quiz have the proper structure to be shown?
+function isQuizOk(quiz) {
+  return (quiz && quiz.startTime && quiz.startIp
+          && quiz.questionsCorrect && quiz.questionsAnswered);
+}
 
-  /* eslint-disable no-else-return */
-  if (isTime(quiz1)) {
-    if (isTime(quiz2)) {
-      return quiz1 - quiz2;
+//  does a quiz have the proper structure to be shown?
+function isQuizOkRight(quiz) {
+  return (quiz && quiz.startIp && quiz.startTime instanceof Date
+          && (typeof quiz.questionsCorrect === 'number')
+          && (typeof quiz.questionsAnswered === 'number'));
+}
+
+//  sort two quizzes
+function quizSortFcn(quiz1, quiz2) {
+  // we make a bitmask. lower sorts first. a mask of 0 means that quiz has
+  // proper date
+  const getSortMask
+        = quiz =>
+        ((isQuizOk(quiz) ? 0 : 2) + (quiz.startTime instanceof Date ? 0 : 1));
+
+  const time1 = quiz1.startTime;
+  const time2 = quiz2.startTime;
+  const mask1 = getSortMask(time1);
+  const mask2 = getSortMask(time2);
+
+  // if one of mask1 or mask2 are not zero, one of quiz1, quiz2 is not a
+  // date
+  /* eslint-disable no-else-return, no-lonely-if */
+  if (mask1 === 0) {
+    if (mask2 === 0) {
+      // both mask1 and mask2 are dates
+      return quiz1.startTime - quiz2.startTime;
     } else {
-      // quiz2 is a bad quiz
+      // quiz1 is OK but not quiz2
       return -1;
     }
-  } else if (isTime(quiz2)) {
-    // quiz1 is a bad quiz1
-    return 1;
   } else {
-    return 0;
+    if (mask2 === 0) {
+      // quiz2 is OK but not quiz1
+      return 1;
+    } else {
+      return mask1 - mask2;
+    }
   }
-  /* eslint-enable no-else-return */
+  /* eslint-enable no-else-return, no-lonely-if */
 }
 
 //  the main admin screen
@@ -165,12 +188,14 @@ exports.main = function main(req, res, next) {
   validateAndCall(req, res, (user, errArr) => {
     quizModel.find().exec((err, quizzes) => {
       common.addToErrArr(err, 'all quizzes', errArr);
-      console.log(quizzes.sort(quizSortFcn));
+      console.log(quizzes);
+      console.log('OK:' + quizzes.map(quiz => isQuizOk(quiz)));
       res.render('view-admin-main', {
         user,
         quizzes: quizzes.sort(quizSortFcn),
         errArr,
-        console
+        console,
+        isQuizOk
       });
     });
   });
