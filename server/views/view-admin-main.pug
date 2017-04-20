@@ -23,7 +23,7 @@ block content
       - 
         theGradeClass 
           = gradeClass(quiz.questionsCorrect, quiz.questionsAnswered);
-      tr(class="table-row #{theGradeClass}")
+      tr(class='table-row ' + theGradeClass)
         - 
           var date = quiz.startTime
           date = date.toLocaleDateString("en-US")
