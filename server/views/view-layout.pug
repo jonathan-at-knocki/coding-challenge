@@ -32,8 +32,8 @@ html
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
       }
-      var errMsg = errArr.map(
-        (err) => escapeHtml(err.toString())).join('<br>')
+      var errMsg = errArr ? errArr.map(
+        (err) => escapeHtml(err.toString())).join('<br>') : ''
        
     h3#error= errMsg
 
