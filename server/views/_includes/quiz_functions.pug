@@ -9,7 +9,7 @@ block quizFunctionsHook
   - 
     function gradePercentStr(questionsAnswered, questionsCorrect) {
       if (!questionsAnswered || !questionsCorrect
-          || isNan(questionsCorrect / questionsAnswered)) return "";
+          || isNaN(questionsCorrect / questionsAnswered)) return "";
       else return Math.round(questionsCorrect / questionsAnswered).toString();
     }  
   -
