@@ -10,7 +10,7 @@ block content
     //- For status messages
     form.form-signin(action=actionLoc, method="post")
       if msg
-        h3= msg
+        h4= msg
       label.sr-only(for="email") email:
       input#email.form-control(
         type="email", name="email", value=email,

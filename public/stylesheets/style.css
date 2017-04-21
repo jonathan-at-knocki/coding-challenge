@@ -32,6 +32,12 @@ body {
 .grade .questions-answered::after {
   content: "\00a0 answered \00a0 = \00a0"; }
 
+.grade-newquiz .questions-answered::after {
+  content: "\00a0 answered"; }
+
+.grade-newquiz .grade-percent {
+  display: none; }
+
 .questions {
   width: auto; }
   .questions .header .ques-num span::after {
@@ -57,6 +63,8 @@ body {
     .questions .numbers .rhs::after {
       content: "=";
       margin: 0 0.2em; }
+  .questions .last-question .rhs::after {
+    visibility: hidden; }
   .questions .answer-given {
     font-weight: bold; }
   .questions .answer-correct {
@@ -107,5 +115,8 @@ body.submit-creds {
 
 body.login nav button {
   display: none; }
+
+.link-admin-main {
+  margin-bottom: 0.3em; }
 
 /*# sourceMappingURL=style.css.map */

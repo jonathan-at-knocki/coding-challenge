@@ -59,7 +59,7 @@ body {
 .grade {
     .questions-correct {
         &::after {
-           content: "\00a0 correct \00a0 / \00a0"
+            content: "\00a0 correct \00a0 / \00a0";
         }
     }
 
@@ -67,6 +67,17 @@ body {
         &::after {
            content: "\00a0 answered \00a0 = \00a0"
         }
+    }
+}
+
+.grade-newquiz {
+    .questions-answered {
+        &::after {
+           content: "\00a0 answered"
+        }
+    }
+    .grade-percent {
+        display: none;
     }
 }
 
@@ -110,6 +121,10 @@ body {
             margin: 0 0.2em;
         }
     }
+
+    .last-question .rhs::after {
+        visibility: hidden;
+    }    
 
     .answer-given {
         font-weight: bold;
@@ -207,4 +222,10 @@ body.login {
     nav button {
         display: none;
     }
+}
+
+// admin quiz
+
+.link-admin-main {
+    margin-bottom: 0.3em;
 }

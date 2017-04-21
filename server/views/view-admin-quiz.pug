@@ -9,7 +9,8 @@ append variables
   - bodyClass += " admin-quiz";
 
 block content
-  a.link-admin-main(href="/admin") Back
+  .container.link-admin-main
+    a(href="/admin") Back
   +showQuiz
     //- block for last question
     span.current-q

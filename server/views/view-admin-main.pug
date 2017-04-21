@@ -9,40 +9,43 @@ append variables
   - bodyClass += ' admin-main'
 
 block content
-  div.addUser
-    a(href="/admin/register") Add new admin user
-  h2 Current quizzes (#{quizzes.length} total)
-  table
-    tr.table-header
-      th.quiz-time start time
-      th.quiz-ip start IP
-      th.quiz-correct nr. correctly answered
-      th.quiz-answered nr. total answered
-      th.quiz-score score
-    for quiz in quizzes
-      //- need to separate out cond because of parsing issues
-      if (quiz.isOk())
-        - 
-          var theGradeClass 
-            = common.gradeClass(
-              quiz.questionsCorrect, quiz.questionsAnswered);
-        tr(class='table-row ' + theGradeClass)
-          td.quiz-time= common.printDate(quiz.startTime)
-          td.quiz-ip
-            a(href='/admin/quiz/' + quiz._id)= quiz.startIp
-          td.quiz-correct= quiz.questionsCorrect
-          td.quiz-answered= quiz.questionsAnswered
-          - 
-            var theGradePercentStr
-              = common.gradePercentStr(
-                quiz.questionsAnswered, quiz.questionsCorrect);
-          td.quiz-score= theGradePercentStr
-      else
-        tr.table-row.bad-quiz
-          td.quiz-time
-          td.quiz-ip bad quiz
-            span(style="display: none;")= quiz ? quiz._id : 'no id'
-          td.quiz-correct
-          td.quiz-answered
-          td.quiz-score
-        
+  .container
+    div.addUser
+      a(href="/admin/register") Add new admin user
+    h3 (#{quizzes.length} total)
+    table.table.table-striped
+      thead
+        tr.table-header
+          th.quiz-time start time
+          th.quiz-ip IP address
+          th.quiz-correct # correct
+          th.quiz-answered # total
+          th.quiz-score score
+      tbody
+        for quiz in quizzes
+          //- need to separate out cond because of parsing issues
+          if (quiz.isOk())
+            - 
+              var theGradeClass 
+                = common.gradeClass(
+                  quiz.questionsCorrect, quiz.questionsAnswered);
+            tr(class='table-row ' + theGradeClass)
+              td.quiz-time= common.printDate(quiz.startTime)
+              td.quiz-ip
+                a(href='/admin/quiz/' + quiz._id)= quiz.startIp
+              td.quiz-correct= quiz.questionsCorrect
+              td.quiz-answered= quiz.questionsAnswered
+              - 
+                var theGradePercentStr
+                  = common.gradePercentStr(
+                    quiz.questionsAnswered, quiz.questionsCorrect);
+              td.quiz-score= theGradePercentStr
+          else
+            tr.table-row.bad-quiz
+              td.quiz-time
+              td.quiz-ip bad quiz
+                span(style="display: none;")= quiz ? quiz._id : 'no id'
+              td.quiz-correct
+              td.quiz-answered
+              td.quiz-score
+
