@@ -4,11 +4,12 @@ body {
   font-size: 16px; }
 
 .restart {
-  margin-after: 0.6em; }
+  margin-bottom: 0.6em; }
 
 .grade {
   font-size: 1.2em;
-  font-weight: 500; }
+  font-weight: 500;
+  margin-bottom: 0.5em; }
 
 .grade-perfect .grade-percent, .grade-a .grade-percent {
   color: #2ECC40; }
@@ -78,5 +79,33 @@ body.quiz form input {
 body.quiz form button {
   margin-left: 0.5em;
   line-height: 1.3; }
+
+body.submit-creds {
+  background-color: #eee; }
+  body.submit-creds .form-signin {
+    max-width: 350px;
+    padding: 15px;
+    margin: 0 auto; }
+  body.submit-creds .form-control {
+    height: auto;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 0.5em; }
+    body.submit-creds .form-control:focus {
+      z-index: 2; }
+  body.submit-creds button {
+    border-radius: 0.5em; }
+  body.submit-creds input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0; }
+  body.submit-creds input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0; }
+
+body.login nav button {
+  display: none; }
 
 /*# sourceMappingURL=style.css.map */

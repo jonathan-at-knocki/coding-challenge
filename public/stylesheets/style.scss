@@ -162,3 +162,49 @@ body.quiz {
         }
     }
 }
+
+///////////////////////////////////////////////////////////////////////////
+//   SIGN-IN STUFF
+
+body.submit-creds {
+    background-color: #eee;
+    .form-signin {
+        max-width: 350px;
+        padding: 15px;
+        margin: 0 auto;
+    }
+
+    .form-control {
+        height: auto;
+        box-sizing: border-box;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 0.5em;
+        &:focus {
+            z-index: 2;
+        }
+    }
+
+    button {
+        border-radius: 0.5em;
+    }
+
+    input[type="email"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    
+    input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }    
+
+}
+
+body.login {
+    nav button {
+        display: none;
+    }
+}

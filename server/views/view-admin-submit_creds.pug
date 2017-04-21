@@ -2,13 +2,20 @@
 
 extends view-admin-base
 
+block variables
+  - bodyClass += " submit-creds";
+
 block content
-  h3= msg
-  form(action=actionLoc, method="post")
-    label
-      | email:
-      input#email(type="email", name="email", value=email)
-    label
-      | password:
-      input#password(type="password", name="password")
-    button(type="submit")= submitText
+  .container
+    //- For status messages
+    form.form-signin(action=actionLoc, method="post")
+      if msg
+        h3= msg
+      label.sr-only(for="email") email:
+      input#email.form-control(
+        type="email", name="email", value=email,
+        placeholder="Email address")
+      label.sr-only(for="password") password:
+      input#password.form-control(type="password", name="password",
+        placeholder="Password")
+      button.btn.btn-primary.btn-block(type="submit")= submitText

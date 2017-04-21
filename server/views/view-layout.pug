@@ -1,4 +1,5 @@
 doctype html
+- var bodyClass = "";
 //- variables is to set any document-wide variables
 block variables
 html
@@ -45,19 +46,18 @@ html
                   a(href="/admin/login") login
     #title.container
       h1= title
-    #err-msg.container
-      //- generate errMsg from errArr
-      -
-        var errMsg = errArr ? errArr.map(
-          (err) => common.escapeHtml(err.toString())).join('<br>') : ''
-
-      h3#error= errMsg
+    //- generate errMsg from errArr
+    -
+      var errMsg = errArr ? errArr.map(
+        (err) => common.escapeHtml(err.toString())).join('<br>') : ''
+    if errMsg
+      #err-msg.container
+        h3#error= errMsg
 
     block content
 
-    footer
-      .container
-        small Jonathan Ganc, for Knocki
+    footer.container
+      small Jonathan Ganc, for Knocki
 
     script(src='/javascripts/jquery-3.2.1.min.js')
     script(src='/bootstrap/js/bootstrap.min.js')

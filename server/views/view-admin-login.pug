@@ -2,4 +2,5 @@ extends view-admin-submit_creds
 
 append variables
   - var actionLoc = '/admin/login' + (redirect ? '?redirect=' + redirect : '')
-  - var submitText = 'Login'
+  - var submitText = 'Login';
+  - bodyClass += ' login';
