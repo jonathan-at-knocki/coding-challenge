@@ -3,7 +3,12 @@
 const mongoose = require('mongoose');
 const credentials = require('../../credentials.js');
 
-mongoose.connect(credentials.mongo.connectionString);
+function mongoConnect() {
+  console.log('Mongoose attempting to connect');
+  mongoose.connect(credentials.mongo.connectionString);
+}
+
+mongoConnect();
 
 // CONNECTION EVENTS
 mongoose.connection.on('connected', function mongoConn() {
@@ -14,6 +19,7 @@ mongoose.connection.on('error', function mongoErr(err) {
 });
 mongoose.connection.on('disconnected', function mongoDisc() {
   console.log('Mongoose disconnected');
+  setInterval(mongoConnect, 200);
 });
 
 // handle disconnects
